@@ -1,0 +1,67 @@
+# depslib dependency file v1.0
+1710390163 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\main.cpp
+	"Game.h"
+
+1711296000 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\game.h
+	<bits/stdc++.h>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+	"Object.h"
+	"Entity.h"
+	"Collision.h"
+	"Map.h"
+	"Obstacle.h"
+	"Grid.h"
+
+1711298174 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\game.cpp
+	"Game.h"
+
+1710529238 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\object.h
+	<bits/stdc++.h>
+	<SDL.h>
+	<SDL_image.h>
+	<SDL_ttf.h>
+	<SDL_mixer.h>
+
+1710529284 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\object.cpp
+	"Object.h"
+
+1710682334 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\entity.h
+	<vector>
+	"Object.h"
+
+1710526646 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\entity.cpp
+	"Entity.h"
+
+1710491765 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\collision.h
+	"Object.h"
+	"Entity.h"
+
+1710489314 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\collision.cpp
+	"Collision.h"
+
+1711296047 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\map.h
+	<bits/stdc++.h>
+	"Object.h"
+	"Obstacle.h"
+	"Grid.h"
+	"Entity.h"
+
+1711296872 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\map.cpp
+	"Map.h"
+
+1711296211 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\obstacle.h
+	"Entity.h"
+	<bits/stdc++.h>
+
+1710862823 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\obstacle.cpp
+	"Obstacle.h"
+
+1710867373 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\grid.cpp
+	"Grid.h"
+
+1710867373 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\grid.h
+	"Object.h"
+
