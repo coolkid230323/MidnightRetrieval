@@ -2,7 +2,7 @@
 1710390163 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\main.cpp
 	"Game.h"
 
-1711296000 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\game.h
+1712067396 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\game.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
@@ -14,8 +14,10 @@
 	"Map.h"
 	"Obstacle.h"
 	"Grid.h"
+	"Bullet.h"
+	"Audio.h"
 
-1711298174 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\game.cpp
+1712067396 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\game.cpp
 	"Game.h"
 
 1710529238 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\object.h
@@ -35,21 +37,23 @@
 1710526646 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\entity.cpp
 	"Entity.h"
 
-1710491765 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\collision.h
+1711871178 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\collision.h
+	<bits/stdc++.h>
 	"Object.h"
 	"Entity.h"
 
-1710489314 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\collision.cpp
+1711871178 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\collision.cpp
 	"Collision.h"
 
-1711296047 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\map.h
+1711983919 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\map.h
 	<bits/stdc++.h>
 	"Object.h"
 	"Obstacle.h"
 	"Grid.h"
 	"Entity.h"
+	"Bullet.h"
 
-1711296872 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\map.cpp
+1711986924 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\map.cpp
 	"Map.h"
 
 1711296211 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\obstacle.h
@@ -64,4 +68,20 @@
 
 1710867373 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\grid.h
 	"Object.h"
+
+1711871081 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\bullet.cpp
+	"Bullet.h"
+
+1711871130 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\bullet.h
+	<bits/stdc++.h>
+	"Entity.h"
+	"Collision.h"
+	"Object.h"
+
+1712066269 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\audio.h
+	<SDL.h>
+	<SDL_mixer.h>
+
+1712067718 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\audio.cpp
+	"Audio.h"
 

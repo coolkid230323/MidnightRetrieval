@@ -4,21 +4,30 @@ Game::Game() {
     if(SDL_Init(SDL_INIT_EVERYTHING) < 0) cout << "Failed at SDL_Init()" << SDL_GetError() << endl;
     if(SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &win, &ren) < 0) cout << "Failed at SDL_CreateWindowAndRenderer()" << SDL_GetError() << endl;
     SDL_SetWindowTitle(win, "Midnight Retrieval");
-    m_Map.loadMap("Assets/1.level", maps, traps, ren, TILE_SIZE);
+
+    background = LoadTexture("Assets/background.png", ren);
+    CrossfadeTexture(ren, background, 1000);
+
+    mainMusic.load("Sounds/mainMusic.wav");
+    mainMusic.play();
+
+    m_Map.loadMap("Assets/1.level", maps, traps, bullets, coins, ren, TILE_SIZE);
+
     TTF_Init();
     running = true;
     count = 0;
-    //font = TTF_OpenFont("Asset/font.ttf", 24);
+    font = TTF_OpenFont("Fonts/GameName.ttf", 24);
     //mapX = mapY = 0;
-    j = 0;
-    player.setDest(WIDTH/2, HEIGHT/2, 64, 64);
-    player.setImage("Assets/player.png", ren);
-    player.setSource(0, 0, 24, 32);
-    idoll = player.createCycle(2, 24, 32, 2, 20);
-    idolr = player.createCycle(1, 24, 32, 2, 20);
-    runl = player.createCycle(4, 24, 32, 4, 4);
-    runr = player.createCycle(3, 24, 32, 4, 4);
-    player.setCurAnimation(idolr);
+    player.setDest(WIDTH/2, HEIGHT/2, 32, 32);
+
+    player.setImage("Assets/player0.png", ren);
+    player.setSource(0, 0, 70, 70);
+    stand = player.createCycle(1, 70, 70, 4, 10);
+    runr = player.createCycle(2, 70, 70, 4, 4);
+    runl = player.createCycle(3, 70, 70, 4, 4);
+    injured = player.createCycle(4, 70, 70, 4, 10);
+    player.setCurAnimation(stand);
+
     loop();
 }
 
@@ -30,6 +39,7 @@ Game::~Game() {
     IMG_Quit();
     TTF_Quit();
     SDL_Quit();
+    SDL_DestroyTexture(background);
 }
 
 void Game::loop() {
@@ -50,7 +60,7 @@ void Game::loop() {
 }
 
 void Game::render() {
-    SDL_SetRenderDrawColor(ren, 100, 55, 50, 255);
+    SDL_SetRenderDrawColor(ren,0, 0, 0, 255);
     SDL_Rect rect;
     rect.x = rect.y = 0;
     rect.w = WIDTH;
@@ -59,6 +69,7 @@ void Game::render() {
 
     drawMap();
     draw(player);
+    draw("Dungeon Game", 200, 50, 255, 255, 255);
 
     frameCount++;
     int timerFPS = SDL_GetTicks()-lastFrame;
@@ -73,7 +84,6 @@ void Game::render() {
 void Game::draw(Object o) {
     SDL_Rect dest = o.getDest();
     SDL_Rect src = o.getSource();
-    //SDL_RenderCopyEx(ren, o.getTex(), &src, &dest, 0, NULL, SDL_FLIP_NONE);
     SDL_RenderCopy(ren, o.getTex(), &src, &dest);
 }
 
@@ -123,21 +133,54 @@ void Game::input() {
                 u = 0;
                 //cout << "down" << endl;
             }
+            if(e.key.keysym.sym == SDLK_j){
+                blue = 1;
+                white = 0;
+                rose = 0;
+            }
+            if(e.key.keysym.sym == SDLK_i){
+                rose = 1;
+                white = 0;
+                blue = 0;
+            }
+            if(e.key.keysym.sym == SDLK_l){
+                yellow = 1;
+                white = 0;
+            }
+            if(e.key.keysym.sym == SDLK_o){
+                white = 1;
+                blue = 0;
+                rose = 0;
+            }
 
         }
         if(e.type == SDL_KEYUP) {
-            if(e.key.keysym.sym == SDLK_LEFT) {l = 0; player.setCurAnimation(idoll);}
-            if(e.key.keysym.sym == SDLK_RIGHT) {r = 0; player.setCurAnimation(idolr);}
+            if(e.key.keysym.sym == SDLK_LEFT) {l = 0; player.setCurAnimation(stand);}
+            if(e.key.keysym.sym == SDLK_RIGHT) {r = 0; player.setCurAnimation(stand);}
             if(e.key.keysym.sym == SDLK_UP) {
                 u = 0;
-                if(player.getCurAnimation() == runl){player.setCurAnimation(idoll);}
-                else{player.setCurAnimation(idolr);}
+                /*if(player.getCurAnimation() == runl){player.setCurAnimation(idoll);}
+                else{player.setCurAnimation(idolr);}*/
+                player.setCurAnimation(stand);
             }
             if(e.key.keysym.sym == SDLK_DOWN) {
                 d = 0;
-                if(player.getCurAnimation() == runl){player.setCurAnimation(idoll);}
-                else{player.setCurAnimation(idolr);}
+                /*if(player.getCurAnimation() == runl){player.setCurAnimation(idoll);}
+                else{player.setCurAnimation(idolr);}*/
+                player.setCurAnimation(stand);
             }
+            if(e.key.keysym.sym == SDLK_j){
+                blue = 0;
+            }
+            if(e.key.keysym.sym == SDLK_i){
+                rose = 0;
+            }
+            if(e.key.keysym.sym == SDLK_l){
+                yellow = 0;
+            }
+            /*if(e.key.keysym.sym == SDLK_o){
+                white = 0;
+            }*/
 
         }
 
@@ -149,7 +192,52 @@ void Game::input() {
 
 }
 
+SDL_Texture* Game::LoadTexture(const char* fileName, SDL_Renderer* renderer) {
+    SDL_Surface* surface = IMG_Load(fileName);
+    if (!surface) {
+        std::cerr << "Failed to load image: " << fileName << ". SDL_image Error: " << IMG_GetError() << std::endl;
+        return nullptr;
+    }
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_FreeSurface(surface);
+    return texture;
+}
+
+void Game::CrossfadeTexture(SDL_Renderer* renderer, SDL_Texture* texture, int duration) {
+    int steps = 100;
+    for (int i = 0; i <= steps; ++i) {
+        SDL_RenderClear(renderer);
+
+        // Calculate the alpha for the texture
+        int alpha = i * 255 / steps;
+
+        // Set the alpha for the texture
+        SDL_SetTextureAlphaMod(texture, alpha);
+
+        // Render the texture
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderFillRect(renderer, nullptr); // Fill with background color
+        SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+
+        // Present renderer
+        SDL_RenderPresent(renderer);
+
+        // Delay to control the speed of crossfade
+        SDL_Delay(duration / steps);
+    }
+}
+
+
+
 void Game::update() {
+
+    for(size_t i = 0; i < bullets.size(); i++){
+        bullets[i].updateBullet(maps);
+    }
+
+    for(size_t i = 0; i < coins.size(); i++){
+        coins[i].updateAnimation();
+    }
 
     for(size_t i = 0; i < traps.size(); i++){
         traps[i].updateObstacle();
@@ -159,33 +247,32 @@ void Game::update() {
     if(l) {if(player.getCurAnimation() != runl) {player.setCurAnimation(runl);} player.setDest(player.getDX() - VELOC, player.getDY());}
     if(r) {if(player.getCurAnimation() != runr) {player.setCurAnimation(runr);} player.setDest(player.getDX() + VELOC, player.getDY());}
     if(u) {
-        if(player.getCurAnimation() == idoll) {
-            player.setCurAnimation(runl);
-        }
-        if(player.getCurAnimation() == idolr) {
-            player.setCurAnimation(runr);
-        }
         player.setDest(player.getDX(), player.getDY() - VELOC);
     }
     if(d) {
-        if(player.getCurAnimation() == idoll) {
-            player.setCurAnimation(runl);
-        }
-        if(player.getCurAnimation() == idolr) {
-            player.setCurAnimation(runr);
-        }
         player.setDest(player.getDX(), player.getDY() + VELOC);
     }
+    if(white){
+        player.setImage("Assets/player0.png", ren);
+    }
+    /*if(blue){
+        player.setImage("Assets/player01.png", ren);
+    }
+    if(rose){
+        player.setImage("Assets/player002.png", ren);
+    }
+    if(yellow){
+        player.setImage("Assets/player002.png", ren);
+    }*/
 
     player.updateAnimation();
 
-    /*for(size_t i = 0; i < traps.size(); i++) {
+    for(size_t i = 0; i < traps.size(); i++) {
         Collision c;
         if(c.collision(player, traps[i])) {
-            traps[i].setImage("Assets/wall.png", ren);
-            traps[i].setVelocity(0, 0);
+            traps.erase(traps.begin() + i);
         }
-    }*/
+    }
 
     for(size_t i = 0; i < maps.size(); i++) {
         Collision c;
@@ -194,7 +281,7 @@ void Game::update() {
 
             for(size_t j = 0; j < maps.size(); j++){
                 if(maps[j].getId() == 02){
-                    maps[j].setImage("Assets/opengrid00.png", ren);
+                    maps[j].setImage("Assets/nen3.png", ren);
                     maps[j].setSolid(0);
                 }
             }
@@ -226,19 +313,31 @@ void Game::scroll(int x, int y) {
         traps[i].setBoundu(traps[i].getBoundu() + y);
         traps[i].setBoundd(traps[i].getBoundd() + y);
     }
+    for(size_t i = 0; i < bullets.size(); i++) {
+        bullets[i].setDest(bullets[i].getDX()+x, bullets[i].getDY()+y);
+        bullets[i].setStartPos(bullets[i].getStartPosX() + x, bullets[i].getStartPosY() + y);
+    }
+    for(size_t i = 0; i < coins.size(); i++) {
+        coins[i].setDest(coins[i].getDX()+x, coins[i].getDY()+y);
+    }
 }
 
 void Game::drawMap() {
     for(size_t i = 0; i < maps.size(); i++) {
-        /*if(map[i].getDX() >= mapX-TILE_SIZE
-        & map[i].getDY() >= mapY-TILE_SIZE
-        & map[i].getDX() <= mapX+WIDTH+TILE_SIZE
-        & map[i].getDY() <= mapY+HEIGHT+TILE_SIZE) */
             draw(maps[i]);
     }
 
     for(size_t i = 0; i < traps.size(); i++){
+
         draw(traps[i]);
+    }
+
+    for(size_t i = 0; i < bullets.size(); i++){
+        draw(bullets[i]);
+    }
+
+    for(size_t i = 0; i < coins.size(); i++) {
+            draw(coins[i]);
     }
 }
 

@@ -7,6 +7,9 @@
 #include "Obstacle.h"
 #include "Grid.h"
 #include "Entity.h"
+#include "Bullet.h"
+
+ //srand(time(NULL));
 
 class Map
 {
@@ -15,9 +18,16 @@ public:
     virtual ~Map();
 
     //void draw(Object o);
-    void loadMap(const char* filename, vector<Entity> &maps, vector<Obstacle> &traps, SDL_Renderer *ren, int TILE_SIZE);
+    void loadMap(const char* filename,
+                vector<Entity> &maps, vector<Obstacle> &traps, vector<Bullet> &bullets, vector<Entity> &coins,
+                SDL_Renderer *ren, int TILE_SIZE);
     //void drawMap();
     //void scroll(int x, int y);
+    int getRandom() const
+    {
+         //srand(time(NULL));
+         return rand() % 3;
+    }
 
 private:
     //vector<Object> map;

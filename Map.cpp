@@ -17,9 +17,12 @@ Map::~Map()
     SDL_RenderCopyEx(ren, o.getTex(), &src, &dest, 0, NULL, SDL_FLIP_NONE);
 }*/
 
-void Map::loadMap(const char* filename, vector<Entity> &maps, vector<Obstacle> &traps, SDL_Renderer *ren, int TILE_SIZE) {
+void Map::loadMap(const char* filename,
+                  vector<Entity> &maps, vector<Obstacle> &traps, vector<Bullet> &bullets, vector<Entity> &coins,
+                  SDL_Renderer *ren, int TILE_SIZE) {
     Entity tmp;
     Obstacle trap;
+    Bullet bullet;
     int current, mx, my, mw, mh;
     ifstream in(filename);
     if(!in.is_open()) {
@@ -40,26 +43,26 @@ void Map::loadMap(const char* filename, vector<Entity> &maps, vector<Obstacle> &
 
             switch(current)
             {
-            /*case 0:
-                tmp.setImage("Assets/floor01.png", ren);
+            case 0:
+                tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 128, 128);
+                tmp.setSource(0, 0, 16, 16);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
                 maps.push_back(tmp);
-                break;*/
+                break;
             case 1:
-                tmp.setImage("Assets/wall01.png", ren);
+                tmp.setImage("Assets/wall03.png", ren);
                 tmp.setSolid(1);
-                tmp.setSource(0, 0, 128, 128);
+                tmp.setSource(0, 0, 50, 50);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
                 maps.push_back(tmp);
                 break;
             case 5:
-                tmp.setImage("Assets/trap00.png", ren);
+                tmp.setImage("Assets/trapspike.png", ren);
                 tmp.setSolid(1);
                 tmp.setSource(0, 0, 128, 128);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
@@ -78,7 +81,7 @@ void Map::loadMap(const char* filename, vector<Entity> &maps, vector<Obstacle> &
                 maps.push_back(tmp);
                 break;
             case 3:
-                tmp.setImage("Assets/key01.png", ren);
+                tmp.setImage("Assets/key.png", ren);
                 tmp.setSolid(0);
                 tmp.setSource(0, 0, 128, 128);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
@@ -87,44 +90,162 @@ void Map::loadMap(const char* filename, vector<Entity> &maps, vector<Obstacle> &
                 maps.push_back(tmp);
                 break;
             case 35:
-                trap.setImage("Assets/Trap01.png", ren);
+                trap.setImage("Assets/trap01.png", ren);
                 trap.setSolid(0);
                 trap.setSource(0, 0, 128, 128);
                 trap.setCurAnimation(trap.createCycle(1, 32, 32, 8, 1));
                 trap.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 trap.setId(current);
-                trap.setVelocity(6, 0);
-                trap.setBoundl(trap.getDX() - 200);
-                trap.setBoundr(trap.getDX() + 200);
-                trap.setBoundu(trap.getDY() - 200);
-                trap.setBoundd(trap.getDY() + 200);
+                trap.setVelocity(3, 0);
+                trap.setBoundl(trap.getDX() - 32*3);
+                trap.setBoundr(trap.getDX() + 32*3);
+                trap.setBoundu(trap.getDY() - 32*3);
+                trap.setBoundd(trap.getDY() + 32*3);
 
                 traps.push_back(trap);
+
+                tmp.setImage("Assets/nen2.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 16, 16);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
+                break;
+            case 36:
+                trap.setImage("Assets/trap01.png", ren);
+                trap.setSolid(0);
+                trap.setSource(0, 0, 128, 128);
+                trap.setCurAnimation(trap.createCycle(1, 32, 32, 8, 1));
+                trap.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                trap.setId(current);
+                trap.setVelocity(0, 3);
+                trap.setBoundl(trap.getDX() - 32*5);
+                trap.setBoundr(trap.getDX() + 32*5);
+                trap.setBoundu(trap.getDY() - 32*5);
+                trap.setBoundd(trap.getDY() + 32*5);
+
+                traps.push_back(trap);
+
+                tmp.setImage("Assets/nen2.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 16, 16);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
+                break;
+            case 37:
+                trap.setImage("Assets/trap01.png", ren);
+                trap.setSolid(0);
+                trap.setSource(0, 0, 128, 128);
+                trap.setCurAnimation(trap.createCycle(1, 32, 32, 8, 1));
+                trap.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                trap.setId(current);
+                trap.setVelocity(-3, 0);
+                trap.setBoundl(trap.getDX() - 32*3);
+                trap.setBoundr(trap.getDX() + 32*3);
+                trap.setBoundu(trap.getDY() - 32*3);
+                trap.setBoundd(trap.getDY() + 32*3);
+
+                traps.push_back(trap);
+
+                tmp.setImage("Assets/nen2.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 16, 16);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
+                break;
+            case 34:
+                trap.setImage("Assets/trap01.png", ren);
+                trap.setSolid(0);
+                trap.setSource(0, 0, 128, 128);
+                trap.setCurAnimation(trap.createCycle(1, 32, 32, 8, 1));
+                trap.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                trap.setId(current);
+                trap.setVelocity(0, -3);
+                trap.setBoundl(trap.getDX() - 32*5);
+                trap.setBoundr(trap.getDX() + 32*5);
+                trap.setBoundu(trap.getDY() - 32*5);
+                trap.setBoundd(trap.getDY() + 32*5);
+
+                traps.push_back(trap);
+
+                tmp.setImage("Assets/nen2.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 16, 16);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
+                break;
+            case 44:
+                bullet.setImage("Assets/bullet.png", ren);
+                bullet.setSolid(1);
+                bullet.setSource(0, 0, 32, 32);
+                bullet.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                bullet.setStartPos((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my);
+                bullet.loadBullet(bullets, 4);
+                bullet.setId(current);
+
+                tmp.setImage("Assets/nen2.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 32, 32);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
+
+                tmp.setImage("Assets/pedestal.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 32, 32);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
+                break;
+            case 48:
+                bullet.setImage("Assets/bullet.png", ren);
+                bullet.setSolid(1);
+                bullet.setSource(0, 0, 32, 32);
+                bullet.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                bullet.setStartPos((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my);
+                bullet.loadBullet(bullets, 8);
+                bullet.setId(current);
+
+                tmp.setImage("Assets/nen2.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 32, 32);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
+
+                tmp.setImage("Assets/pedestal.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 32, 32);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
+                break;
+            case 55:
+                tmp.setImage("Assets/coin.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 48, 8);
+                tmp.setCurAnimation(tmp.createCycle(1, 8, 8, 6, 6));
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                coins.push_back(tmp);
                 break;
             default:
                 break;
-
-
             }
 
         }
     }
     in.close();
 }
-
-/*void Map::scroll(int x, int y) {
-    for(auto i = 0; i < map.size(); i++) {
-        map[i].setDest(map[i].getDX()+x, map[i].getDY()+y);
-    }
-}*/
-
-/*void Map::drawMap() {
-    for(auto i = 0; i < map.size(); i++) {
-        if(map[i].getDX() >= mapX-TILE_SIZE
-        & map[i].getDY() >= mapY-TILE_SIZE
-        & map[i].getDX() <= mapX+WIDTH+TILE_SIZE
-        & map[i].getDY() <= mapY+HEIGHT+TILE_SIZE) {
-          draw(map[i]);
-        }
-    }
-*/

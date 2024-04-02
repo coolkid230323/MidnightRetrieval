@@ -13,11 +13,13 @@
 #include "Map.h"
 #include "Obstacle.h"
 #include "Grid.h"
+#include "Bullet.h"
+#include "Audio.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
 #define defaultFPS 1000/60
-#define TILE_SIZE 64
+#define TILE_SIZE 32
 #define VELOC 6
 
 
@@ -31,27 +33,37 @@ public:
     void render();
     void draw(Object o);
     void draw(const char* msg, int x, int y, int r, int g, int b);
-    //void loadMap(const char* filename);
     void drawMap();
     void scroll(int x, int y);
+    SDL_Texture* LoadTexture(const char* fileName, SDL_Renderer* renderer);
+    void CrossfadeTexture(SDL_Renderer* renderer, SDL_Texture* texture, int duration);
 
 private:
     SDL_Renderer* ren;
     SDL_Window* win;
+    SDL_Texture* background;
     TTF_Font *font;
+
     bool running;
     int count;
     int frameCount, timerFPS, lastFrame;
     int mousex, mousey;
+
     Entity player;
     Map m_Map;
+
     vector<Entity> maps;
     vector<Obstacle> traps;
     vector<Object> grids;
+    vector<Bullet> bullets;
+    vector<Entity> coins;
+
+    Audio mainMusic;
+
     int mapX, mapY;
     int veloc;
-    bool l, r, u, d, j;
-    int idoll, idolr, runl, runr;
+    bool l, r, u, d, rose, blue, yellow, white;
+    int idoll, idolr, runl, runr, stand, injured;
 };
 
 

@@ -19,3 +19,12 @@ bool Collision::collision(Object a, Object b) {
         return false;
     }
 }
+
+bool Collision::checkCollisionWithMap(Object a, vector<Entity> maps)
+{
+    for(size_t i = 0; i < maps.size(); i++){
+        if(collision(a, maps[i]) && maps[i].getSolid()) return true;
+    }
+
+    return false;
+}
