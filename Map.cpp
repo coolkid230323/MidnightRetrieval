@@ -72,7 +72,7 @@ void Map::loadMap(const char* filename,
                 break;
             case 2:
                 tmp.setImage("Assets/grid02.png", ren);
-                tmp.setSolid(1);
+                tmp.setSolid(0);
                 tmp.setSource(0, 0, 128, 128);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
@@ -81,9 +81,9 @@ void Map::loadMap(const char* filename,
                 maps.push_back(tmp);
                 break;
             case 3:
-                tmp.setImage("Assets/key.png", ren);
+                tmp.setImage("Assets/health.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 128, 128);
+                tmp.setSource(0, 0, 400, 400);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -183,7 +183,7 @@ void Map::loadMap(const char* filename,
                 break;
             case 44:
                 bullet.setImage("Assets/bullet.png", ren);
-                bullet.setSolid(1);
+                bullet.setSolid(0);
                 bullet.setSource(0, 0, 32, 32);
                 bullet.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 bullet.setStartPos((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my);
@@ -208,7 +208,7 @@ void Map::loadMap(const char* filename,
                 break;
             case 48:
                 bullet.setImage("Assets/bullet.png", ren);
-                bullet.setSolid(1);
+                bullet.setSolid(0);
                 bullet.setSource(0, 0, 32, 32);
                 bullet.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 bullet.setStartPos((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my);
@@ -240,6 +240,14 @@ void Map::loadMap(const char* filename,
                 tmp.setId(current);
 
                 coins.push_back(tmp);
+
+                tmp.setImage("Assets/nen2.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 32, 32);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
                 break;
             default:
                 break;

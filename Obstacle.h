@@ -13,11 +13,11 @@ public:
 
     void updateObstacle();
 
-    void setBoundl(int b) {boundary_l = b;}
-    void setBoundr(int b) {boundary_r = b;}
-    void setBoundu(int b) {boundary_u = b;}
-    void setBoundd(int b) {boundary_d = b;}
-    void setVelocity(int x, int y) {velocity_x = x; velocity_y = y;}
+    void setBoundl(const int &b) {boundary_l = b;}
+    void setBoundr(const int &b) {boundary_r = b;}
+    void setBoundu(const int &b) {boundary_u = b;}
+    void setBoundd(const int &b) {boundary_d = b;}
+    void setVelocity(const int &x, const int &y) {velocity_x = x; velocity_y = y;}
 
     int getVelocity_x() const {return velocity_x;}
     int getVelocity_y() const {return velocity_y;}

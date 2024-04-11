@@ -9,15 +9,24 @@ Game::Game() {
     CrossfadeTexture(ren, background, 1000);
 
     mainMusic.load("Sounds/mainMusic.wav");
-    mainMusic.play();
+    mainMusic.play(-1);
+    pickCoin.load("Sounds/pickcoin.wav");
+    bulletSound.load("Sounds/bulletSound.wav");
 
     m_Map.loadMap("Assets/1.level", maps, traps, bullets, coins, ren, TILE_SIZE);
 
     TTF_Init();
     running = true;
     count = 0;
-    font = TTF_OpenFont("Fonts/GameName.ttf", 24);
+    lifeBar = 100;
+    font1 = TTF_OpenFont("Fonts/GameName.ttf", 70);
+    font2 = TTF_OpenFont("Fonts/GameName.ttf", 70);
     //mapX = mapY = 0;
+
+    countCoin.setDest(0, 0, 64, 64);
+    countCoin.setImage("Assets/coins.png", ren);
+    countCoin.setSource(0, 0, 512, 512);
+
     player.setDest(WIDTH/2, HEIGHT/2, 32, 32);
 
     player.setImage("Assets/player0.png", ren);
@@ -28,16 +37,20 @@ Game::Game() {
     injured = player.createCycle(4, 70, 70, 4, 10);
     player.setCurAnimation(stand);
 
+    enemy.setDest(900, 500, 32, 32);
+    enemy.setImage("Assets/health.png", ren);
+    enemy.setSource(0, 0, 348, 348);
+
     loop();
 }
 
 Game::~Game() {
-    TTF_CloseFont(font);
+    TTF_CloseFont(font1);
+    TTF_CloseFont(font2);
     TTF_Quit();
     SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(win);
     IMG_Quit();
-    TTF_Quit();
     SDL_Quit();
     SDL_DestroyTexture(background);
 }
@@ -69,7 +82,18 @@ void Game::render() {
 
     drawMap();
     draw(player);
-    draw("Dungeon Game", 200, 50, 255, 255, 255);
+    draw(enemy);
+
+    SDL_SetRenderDrawColor(ren,95, 158, 160, 255);
+    SDL_Rect nen;
+    nen.x = 0;
+    nen.y = 0;
+    nen.w = WIDTH;
+    nen.h = 64;
+    SDL_RenderFillRect(ren, &nen);
+    draw(countCoin);
+    draw(intToString(count), 80, 0, 255, 255, 255, font1);
+    draw(intToString(lifeBar), 1200, 0, 255, 255, 255, font2);
 
     frameCount++;
     int timerFPS = SDL_GetTicks()-lastFrame;
@@ -80,6 +104,16 @@ void Game::render() {
     SDL_RenderPresent(ren);
 }
 
+const char* Game::intToString(const int &num) {
+    std::stringstream ss;
+    ss << num;
+    std::string tempString = ss.str();
+
+    char* charArray = new char[tempString.length() + 1];
+    strcpy(charArray, tempString.c_str());
+    return charArray;
+}
+
 
 void Game::draw(Object o) {
     SDL_Rect dest = o.getDest();
@@ -87,7 +121,7 @@ void Game::draw(Object o) {
     SDL_RenderCopy(ren, o.getTex(), &src, &dest);
 }
 
-void Game::draw(const char* msg, int x, int y, int r, int g, int b) {
+void Game::draw(const char* msg, const int &x, const int &y, const int &r, const int &g, const int &b, TTF_Font* font) {
     SDL_Surface* surf;
     SDL_Texture* tex;
     SDL_Color color;
@@ -203,7 +237,7 @@ SDL_Texture* Game::LoadTexture(const char* fileName, SDL_Renderer* renderer) {
     return texture;
 }
 
-void Game::CrossfadeTexture(SDL_Renderer* renderer, SDL_Texture* texture, int duration) {
+void Game::CrossfadeTexture(SDL_Renderer* renderer, SDL_Texture* texture, const int &duration) {
     int steps = 100;
     for (int i = 0; i <= steps; ++i) {
         SDL_RenderClear(renderer);
@@ -231,8 +265,12 @@ void Game::CrossfadeTexture(SDL_Renderer* renderer, SDL_Texture* texture, int du
 
 void Game::update() {
 
+    if(lifeBar == 0){
+        running = false;
+    }
+
     for(size_t i = 0; i < bullets.size(); i++){
-        bullets[i].updateBullet(maps);
+        bullets[i].updateBullet(maps, player);
     }
 
     for(size_t i = 0; i < coins.size(); i++){
@@ -244,13 +282,29 @@ void Game::update() {
         traps[i].updateAnimation();
     }
 
-    if(l) {if(player.getCurAnimation() != runl) {player.setCurAnimation(runl);} player.setDest(player.getDX() - VELOC, player.getDY());}
-    if(r) {if(player.getCurAnimation() != runr) {player.setCurAnimation(runr);} player.setDest(player.getDX() + VELOC, player.getDY());}
+    if(l){
+        if(player.getCurAnimation() != runl){
+            player.setCurAnimation(runl);
+            //player.setDest(player.getDX() - VELOC, player.getDY());
+        }
+        //player.setDest(player.getDX() - VELOC, player.getDY());
+        scroll(VELOC, 0);
+    }
+    if(r){
+        if(player.getCurAnimation() != runr){
+            //player.setCurAnimation(runr);
+            //player.setDest(player.getDX() + VELOC, player.getDY());}
+        }
+        //player.setDest(player.getDX() + VELOC, player.getDY());
+        scroll(-VELOC, 0);
+    }
     if(u) {
-        player.setDest(player.getDX(), player.getDY() - VELOC);
+        //player.setDest(player.getDX(), player.getDY() - VELOC);
+        scroll(0, VELOC);
     }
     if(d) {
-        player.setDest(player.getDX(), player.getDY() + VELOC);
+        //player.setDest(player.getDX(), player.getDY() + VELOC);
+        scroll(0, -VELOC);
     }
     if(white){
         player.setImage("Assets/player0.png", ren);
@@ -267,17 +321,13 @@ void Game::update() {
 
     player.updateAnimation();
 
-    for(size_t i = 0; i < traps.size(); i++) {
-        Collision c;
-        if(c.collision(player, traps[i])) {
-            traps.erase(traps.begin() + i);
-        }
-    }
+    enemy.updateEnemy(player, maps);
+
 
     for(size_t i = 0; i < maps.size(); i++) {
         Collision c;
         if(c.collision(player, maps[i]) && maps[i].getId() == 03) {
-            maps[i].setImage("Assets/wall.png", ren);
+            maps.erase(maps.begin() + i);
 
             for(size_t j = 0; j < maps.size(); j++){
                 if(maps[j].getId() == 02){
@@ -288,21 +338,68 @@ void Game::update() {
         }
         if(c.collision(player, maps[i]) && maps[i].getSolid()) {
 
-            if(l) {if(player.getCurAnimation() != runl) {player.setCurAnimation(runl);} player.setDest(player.getDX() + VELOC, player.getDY());}
-            if(r) {if(player.getCurAnimation() != runr) {player.setCurAnimation(runr);} player.setDest(player.getDX() - VELOC, player.getDY());}
-            if(u) {player.setDest(player.getDX(), player.getDY() + VELOC);}
-            if(d) {player.setDest(player.getDX(), player.getDY() - VELOC);}
+            if(l) {
+                if(player.getCurAnimation() != runl){
+                    player.setCurAnimation(runl);
+                    //player.setDest(player.getDX() + VELOC, player.getDY());}
+                }
+                //player.setDest(player.getDX() + VELOC, player.getDY());
+                scroll(-VELOC, 0);
+            }
+            if(r) {
+                if(player.getCurAnimation() != runr){
+                    player.setCurAnimation(runr);
+                    //player.setDest(player.getDX() - VELOC, player.getDY());}
+                }
+                //player.setDest(player.getDX() - VELOC, player.getDY());
+                scroll(VELOC, 0);
+            }
+            if(u) {
+                //player.setDest(player.getDX(), player.getDY() + VELOC);
+                scroll(0, -VELOC);
+            }
+            if(d) {
+                //player.setDest(player.getDX(), player.getDY() - VELOC);
+                scroll(0, VELOC);
+            }
 
         }
     }
 
-    if(player.getDX() < 550) {player.setDest(550, player.getDY()); scroll(VELOC, 0);}
+    for(size_t i = 0; i < coins.size(); i++){
+        Collision c;
+        if(c.collision(coins[i], player)){
+            pickCoin.play(0);
+            coins.erase(coins.begin() + i);
+            draw(intToString(count), 80, 0, 95, 158, 160, font1);
+            count++;
+            draw(intToString(count), 80, 0, 255, 255, 255, font1);
+        }
+        else{
+
+        }
+    }
+
+    for(size_t i = 0; i < bullets.size(); i++){
+        Collision c;
+        if(c.collision(bullets[i], player)){
+            bulletSound.play(0);
+            player.setCurAnimation(injured);
+            draw(intToString(lifeBar), 1200, 0, 0, 0, 0, font2);
+            lifeBar--;
+            draw(intToString(lifeBar), 1200, 0, 255, 255, 255, font2);
+        }
+    }
+
+
+
+    /*if(player.getDX() < 550) {player.setDest(550, player.getDY()); scroll(VELOC, 0);}
     if(player.getDX() > WIDTH-550) {player.setDest(WIDTH-550, player.getDY()); scroll(-VELOC, 0);}
     if(player.getDY() < 330) {player.setDest(player.getDX(), 330); scroll(0, VELOC);}
-    if(player.getDY() > HEIGHT-330) {player.setDest(player.getDX(), HEIGHT-330); scroll(0, -VELOC);}
+    if(player.getDY() > HEIGHT-330) {player.setDest(player.getDX(), HEIGHT-330); scroll(0, -VELOC);}*/
 }
 
-void Game::scroll(int x, int y) {
+void Game::scroll(const int &x, const int &y) {
     for(size_t i = 0; i < maps.size(); i++) {
         maps[i].setDest(maps[i].getDX()+x, maps[i].getDY()+y);
     }
@@ -320,6 +417,10 @@ void Game::scroll(int x, int y) {
     for(size_t i = 0; i < coins.size(); i++) {
         coins[i].setDest(coins[i].getDX()+x, coins[i].getDY()+y);
     }
+
+    enemy.setDest(enemy.getDX()+x, enemy.getDY()+y);
+
+
 }
 
 void Game::drawMap() {

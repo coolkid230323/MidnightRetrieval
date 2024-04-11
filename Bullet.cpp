@@ -10,7 +10,7 @@ Bullet:: ~Bullet()
 
 }
 
-void Bullet::loadBullet(vector<Bullet> &bullets, int dir)
+void Bullet::loadBullet(vector<Bullet> &bullets, const int &dir)
 {
     if(dir == 4 || dir == 8){
         this->setVelocity(2, 0);
@@ -40,16 +40,16 @@ void Bullet::loadBullet(vector<Bullet> &bullets, int dir)
     }
 }
 
-void Bullet::setStartPos(int x, int y)
+void Bullet::setStartPos(const int &x, const int &y)
 {
     startPosX = x;
     startPosY = y;
 }
 
-void Bullet::updateBullet(vector<Entity> maps)
+void Bullet::updateBullet(const vector<Entity> &maps, const Entity &player)
 {
     Collision c;
-    if(c.checkCollisionWithMap(*this, maps)){
+    if(c.checkCollisionWithMap(*this, maps) || c.collision(*this, player)){
         this->setDest(startPosX, startPosY);
     }
 

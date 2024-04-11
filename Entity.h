@@ -9,8 +9,8 @@ class Entity : public Object
 {
 public:
     Entity();
-    int createCycle(int r, int w, int h, int amount, int speed);
-    void setCurAnimation(int c) {begin = 0; curAnim = c;}
+    int createCycle(const int &r, const int &w, const int &h, const int &amount, const int &speed);
+    void setCurAnimation(const int &c) {begin = 0; curAnim = c;}
     int getCurAnimation() const {return curAnim;}
     void updateAnimation();
     //void reverse(bool r) {rev = r;}

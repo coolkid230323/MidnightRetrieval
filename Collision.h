@@ -11,8 +11,8 @@ class Collision
 public:
     Collision();
     virtual ~Collision();
-    bool collision(Object a, Object b);
-    bool checkCollisionWithMap( Object a, vector<Entity> maps);
+    bool collision(const Object &a, const Object &b);
+    bool checkCollisionWithMap(const Object &a, const vector<Entity> &maps);
 
 private:
 

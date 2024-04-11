@@ -5,7 +5,7 @@ Entity::Entity()
 
 }
 
-int Entity::createCycle(int r, int w, int h, int amount, int speed) {
+int Entity::createCycle(const int &r, const int &w, const int &h, const int &amount, const int &speed) {
     cycle tmp;
     tmp.row = r - 1;
     tmp.w = w;

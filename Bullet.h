@@ -13,10 +13,10 @@ public:
     Bullet();
     ~Bullet();
 
-    void setVelocity(int x, int y) {velocity_x = x; velocity_y = y;}
-    void loadBullet(vector<Bullet> &bullets, int dir);
-    void setStartPos(int x, int y);
-    void updateBullet(vector<Entity> maps);
+    void setVelocity(const int &x, const int &y) {velocity_x = x; velocity_y = y;}
+    void loadBullet(vector<Bullet> &bullets, const int &dir);
+    void setStartPos(const int &x, const int &y);
+    void updateBullet(const vector<Entity> &maps, const Entity &player);
 
     int getStartPosX() const {return startPosX;}
     int getStartPosY() const {return startPosY;}

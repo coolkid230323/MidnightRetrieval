@@ -26,9 +26,9 @@ void Audio::load(const char* filename)
     }
 }
 
-void Audio ::play()
+void Audio ::play(const int & loop)
 {
-    if(Mix_PlayChannel(-1, wavChunk, -1) == -1) {
+    if(Mix_PlayChannel(-1, wavChunk, loop) == -1) {
         // Xử lý lỗi khi không thể phát âm thanh
         // Thông báo lỗi hoặc thực hiện các hành động phù hợp
     }

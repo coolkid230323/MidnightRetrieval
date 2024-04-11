@@ -18,7 +18,7 @@ private:
     int id;
 
 public:
-    Object() {solid = 1;}
+    Object() {solid = 0;}
     SDL_Rect getDest() const {return dest;}
     SDL_Rect getSource() const {return src;}
     void setDest(int x, int y, int w, int h);

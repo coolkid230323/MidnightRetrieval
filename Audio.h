@@ -12,7 +12,7 @@ public:
     ~Audio();
 
     void load(const char* filename);
-    void play();
+    void play(const int &loop);
     void stop();
     void pause();
     void resume();

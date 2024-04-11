@@ -15,6 +15,7 @@
 #include "Grid.h"
 #include "Bullet.h"
 #include "Audio.h"
+#include "Enemy.h"
 
 #define WIDTH 1280
 #define HEIGHT 720
@@ -31,25 +32,31 @@ public:
     void update();
     void input();
     void render();
+    static const char* intToString(const int &num);
     void draw(Object o);
-    void draw(const char* msg, int x, int y, int r, int g, int b);
+    void draw(const char* msg, const int &x, const int &y, const int &r, const int &g, const int &b, TTF_Font* font);
     void drawMap();
-    void scroll(int x, int y);
+    void scroll(const int &x, const int &y);
     SDL_Texture* LoadTexture(const char* fileName, SDL_Renderer* renderer);
-    void CrossfadeTexture(SDL_Renderer* renderer, SDL_Texture* texture, int duration);
+    void CrossfadeTexture(SDL_Renderer* renderer, SDL_Texture* texture, const int &duration);
 
 private:
-    SDL_Renderer* ren;
-    SDL_Window* win;
-    SDL_Texture* background;
-    TTF_Font *font;
+    SDL_Renderer* ren = nullptr;
+    SDL_Window* win = nullptr;
+    SDL_Texture* background = nullptr;
+    TTF_Font* font1 = nullptr;
+    TTF_Font* font2 = nullptr;
 
     bool running;
+    bool showMenu;
     int count;
+    int lifeBar;
     int frameCount, timerFPS, lastFrame;
     int mousex, mousey;
 
     Entity player;
+    Enemy enemy;
+    Object countCoin;
     Map m_Map;
 
     vector<Entity> maps;
@@ -59,6 +66,8 @@ private:
     vector<Entity> coins;
 
     Audio mainMusic;
+    Audio pickCoin;
+    Audio bulletSound;
 
     int mapX, mapY;
     int veloc;
