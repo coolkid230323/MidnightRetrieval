@@ -49,7 +49,7 @@ private:
 
     bool running;
     bool showMenu;
-    int count;
+    int counts;
     int lifeBar;
     int frameCount, timerFPS, lastFrame;
     int mousex, mousey;
@@ -66,6 +66,7 @@ private:
     vector<Entity> coins;
     vector<Enemy> enemies;
     vector<Object> pedestals;
+    vector<Entity> mushrooms;
 
     Audio mainMusic;
     Audio pickCoin;

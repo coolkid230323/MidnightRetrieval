@@ -6,6 +6,7 @@ Enemy::Enemy()
     isMoving = false;
     canShoot = false;
     bulletCanMove = false;
+    checkCollisionWithPlayer = false;
     dxB = 0;
     dyB = 0;
 }
@@ -25,22 +26,24 @@ void Enemy::check(const Entity &player)
         canFind = false;
     }
 
-    int disX = abs(player.getDX() - getDX());
-    int disY = abs(player.getDY() - getDY());
+    if(!canShoot || !bulletCanMove){
+        int disX = abs(player.getDX() - getDX());
+        int disY = abs(player.getDY() - getDY());
 
-    if(disX == 0 || disY == 0 || disX == disY){
-        bulletCanMove = true;
-        if(disX == 0){
-            dxB = 0;
-        }
-        else{
-            dxB = (player.getDX() - getDX()) / disX * 4;
-        }
-        if(disY == 0){
-            dyB = 0;
-        }
-        else{
-            dyB = (player.getDY() - getDY()) / disY * 4;
+        if(disX == 0 || disY == 0 || disX == disY){
+            bulletCanMove = true;
+            if(disX == 0){
+                dxB = 0;
+            }
+            else{
+                dxB = (player.getDX() - getDX()) / disX * 4;
+            }
+            if(disY == 0){
+                dyB = 0;
+            }
+            else{
+                dyB = (player.getDY() - getDY()) / disY * 4;
+            }
         }
     }
 }
@@ -145,9 +148,14 @@ void Enemy::shoot(const Entity &player, const vector<Entity> &maps, SDL_Renderer
         bullets[0].setDest(bullets[0].getDX() + dxB, bullets[0].getDY() + dyB);
 
         Collision c;
-        if(c.checkCollisionWithMap(bullets[0], maps) || c.collision(bullets[0], player) || !isMoving){
+        if(c.checkCollisionWithMap(bullets[0], maps) || !isMoving){
             bulletCanMove = false;
             bullets.pop_back();
+        }
+        else if(c.collision(bullets[0], player)){
+            bulletCanMove = false;
+            bullets.pop_back();
+            setCollisionWithPlayer(true);
         }
     }
 }

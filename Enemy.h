@@ -21,19 +21,32 @@ public:
     void shoot(const Entity &player, const vector<Entity> &maps, SDL_Renderer* ren);
     bool checkShoot() const
     {
-        if(canShoot && bulletCanMove && bullets.size() != 0){
+        if(canShoot && bulletCanMove && !isEmpty()){
             return true;
         }
 
         return false;
     }
     void setDestForBullet(const int &x, const int &y);
+    bool isEmpty() const
+    {
+        return bullets.size() == 0;
+    }
+    bool getCollisionWithPlayer() const
+    {
+        return checkCollisionWithPlayer;
+    }
+    void setCollisionWithPlayer(const bool &b)
+    {
+        checkCollisionWithPlayer = b;
+    }
 
 private:
     bool canFind;
     bool isMoving;
     bool canShoot;
     bool bulletCanMove;
+    bool checkCollisionWithPlayer;
     Object bullet;
     vector<Object> bullets;
     int dxB, dyB;

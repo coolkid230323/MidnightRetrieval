@@ -13,11 +13,11 @@ Game::Game() {
     pickCoin.load("Sounds/pickcoin.wav");
     bulletSound.load("Sounds/bulletSound.wav");
 
-    m_Map.loadMap("Assets/1.level", maps, traps, bullets, coins, enemies, pedestals, ren, TILE_SIZE);
+    m_Map.loadMap("Assets/1.level", maps, traps, bullets, coins, enemies, pedestals, mushrooms, ren, TILE_SIZE);
 
     TTF_Init();
     running = true;
-    count = 0;
+    counts = 0;
     lifeBar = 100;
     font1 = TTF_OpenFont("Fonts/GameName.ttf", 70);
     font2 = TTF_OpenFont("Fonts/GameName.ttf", 70);
@@ -91,7 +91,7 @@ void Game::render() {
     nen.h = 64;
     SDL_RenderFillRect(ren, &nen);
     draw(countCoin);
-    draw(intToString(count), 80, 0, 255, 255, 255, font1);
+    draw(intToString(counts), 80, 0, 255, 255, 255, font1);
     draw(countLives);
     draw(intToString(lifeBar), 1200, 0, 255, 255, 255, font2);
 
@@ -281,9 +281,14 @@ void Game::update() {
         traps[i].updateObstacle();
         traps[i].updateAnimation();
     }
+
     for(size_t i = 0; i < enemies.size(); i++){
         enemies[i].updateEnemy(player, maps, ren);
         enemies[i].updateAnimation();
+    }
+
+    for(size_t i = 0; i < mushrooms.size(); i++){
+        mushrooms[i].updateAnimation();
     }
 
     if(l){
@@ -313,15 +318,6 @@ void Game::update() {
     if(white){
         player.setImage("Assets/player0.png", ren);
     }
-    /*if(blue){
-        player.setImage("Assets/player01.png", ren);
-    }
-    if(rose){
-        player.setImage("Assets/player002.png", ren);
-    }
-    if(yellow){
-        player.setImage("Assets/player002.png", ren);
-    }*/
 
     player.updateAnimation();
 
@@ -374,12 +370,19 @@ void Game::update() {
         if(c.collision(coins[i], player)){
             pickCoin.play(0);
             coins.erase(coins.begin() + i);
-            draw(intToString(count), 80, 0, 95, 158, 160, font1);
-            count++;
-            draw(intToString(count), 80, 0, 255, 255, 255, font1);
+            draw(intToString(counts), 80, 0, 95, 158, 160, font1);
+            counts++;
+            //draw(intToString(counts), 80, 0, 255, 255, 255, font1);
         }
-        else{
+    }
 
+    for(size_t i = 0; i < mushrooms.size(); i++){
+        Collision c;
+        if(c.collision(mushrooms[i], player)){
+            mushrooms.erase(mushrooms.begin() + i);
+            draw(intToString(lifeBar), 1200, 0, 95, 158, 160, font2);
+            lifeBar+=1;
+            //draw(intToString(lifeBar), 1200, 0, 255, 255, 255, font2);
         }
     }
 
@@ -388,18 +391,21 @@ void Game::update() {
         if(c.collision(bullets[i], player)){
             bulletSound.play(0);
             player.setCurAnimation(injured);
-            draw(intToString(lifeBar), 1200, 0, 0, 0, 0, font2);
+            draw(intToString(lifeBar), 1200, 0, 95, 158, 160, font2);
             lifeBar--;
-            draw(intToString(lifeBar), 1200, 0, 255, 255, 255, font2);
+            //draw(intToString(lifeBar), 1200, 0, 255, 255, 255, font2);
         }
     }
 
+    for(size_t i = 0; i < enemies.size(); i++){
+        Collision c;
+        if(enemies[i].getCollisionWithPlayer()){
+            draw(intToString(lifeBar), 1200, 0, 95, 158, 160, font2);
+            lifeBar--;
+            enemies[i].setCollisionWithPlayer(false);
+        }
+    }
 
-
-    /*if(player.getDX() < 550) {player.setDest(550, player.getDY()); scroll(VELOC, 0);}
-    if(player.getDX() > WIDTH-550) {player.setDest(WIDTH-550, player.getDY()); scroll(-VELOC, 0);}
-    if(player.getDY() < 330) {player.setDest(player.getDX(), 330); scroll(0, VELOC);}
-    if(player.getDY() > HEIGHT-330) {player.setDest(player.getDX(), HEIGHT-330); scroll(0, -VELOC);}*/
 }
 
 void Game::scroll(const int &x, const int &y) {
@@ -426,6 +432,9 @@ void Game::scroll(const int &x, const int &y) {
     for(size_t i = 0; i < enemies.size(); i++){
         enemies[i].setDest(enemies[i].getDX()+x, enemies[i].getDY()+y);
         enemies[i].setDestForBullet(x, y);
+    }
+    for(size_t i = 0; i < mushrooms.size(); i++){
+        mushrooms[i].setDest(mushrooms[i].getDX()+x, mushrooms[i].getDY()+y);
     }
 }
 
@@ -456,6 +465,10 @@ void Game::drawMap() {
         if(enemies[i].checkShoot()){
             draw(enemies[i].getBullet());
         }
+    }
+
+    for(size_t i = 0; i < mushrooms.size(); i++){
+        draw(mushrooms[i]);
     }
 }
 

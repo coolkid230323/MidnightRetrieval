@@ -19,7 +19,7 @@ Map::~Map()
 
 void Map::loadMap(const char* filename,
                   vector<Entity> &maps, vector<Obstacle> &traps, vector<Bullet> &bullets, vector<Entity> &coins,
-                  vector<Enemy> &enemies, vector<Object> &pedestals,
+                  vector<Enemy> &enemies, vector<Object> &pedestals, vector<Entity> &mushrooms,
                   SDL_Renderer *ren, int TILE_SIZE) {
     Entity tmp;
     Obstacle trap;
@@ -268,6 +268,24 @@ void Map::loadMap(const char* filename,
                 enemy.setId(current);
 
                 enemies.push_back(enemy);
+                break;
+            case 88:
+                tmp.setImage("Assets/mushroom.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 96, 13);
+                tmp.setCurAnimation(tmp.createCycle(1, 16, 13, 6, 10));
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                mushrooms.push_back(tmp);
+
+                tmp.setImage("Assets/nen2.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 32, 32);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
                 break;
             case 99:
                 tmp.setImage("Assets/nen2.png", ren);
