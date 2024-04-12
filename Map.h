@@ -8,6 +8,7 @@
 #include "Grid.h"
 #include "Entity.h"
 #include "Bullet.h"
+#include "Enemy.h"
 
  //srand(time(NULL));
 
@@ -20,6 +21,7 @@ public:
     //void draw(Object o);
     void loadMap(const char* filename,
                 vector<Entity> &maps, vector<Obstacle> &traps, vector<Bullet> &bullets, vector<Entity> &coins,
+                vector<Enemy> &enemies, vector<Object> &pedestals,
                 SDL_Renderer *ren, int TILE_SIZE);
     //void drawMap();
     //void scroll(int x, int y);

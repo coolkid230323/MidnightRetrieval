@@ -55,7 +55,6 @@ private:
     int mousex, mousey;
 
     Entity player;
-    Enemy enemy;
     Object countCoin;
     Object countLives;
     Map m_Map;
@@ -65,6 +64,8 @@ private:
     vector<Object> grids;
     vector<Bullet> bullets;
     vector<Entity> coins;
+    vector<Enemy> enemies;
+    vector<Object> pedestals;
 
     Audio mainMusic;
     Audio pickCoin;

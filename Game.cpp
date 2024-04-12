@@ -13,7 +13,7 @@ Game::Game() {
     pickCoin.load("Sounds/pickcoin.wav");
     bulletSound.load("Sounds/bulletSound.wav");
 
-    m_Map.loadMap("Assets/1.level", maps, traps, bullets, coins, ren, TILE_SIZE);
+    m_Map.loadMap("Assets/1.level", maps, traps, bullets, coins, enemies, pedestals, ren, TILE_SIZE);
 
     TTF_Init();
     running = true;
@@ -40,12 +40,6 @@ Game::Game() {
     runl = player.createCycle(3, 70, 70, 4, 4);
     injured = player.createCycle(4, 70, 70, 4, 10);
     player.setCurAnimation(stand);
-
-    enemy.setDest(900, 500, 64, 64);
-    enemy.setImage("Assets/enemy02.png", ren);
-    enemy.createCycle(1, 64, 36, 9, 10);
-    enemy.setSource(0, 0, 36, 576);
-    enemy.setCurAnimation(0);
 
     loop();
 }
@@ -88,7 +82,6 @@ void Game::render() {
 
     drawMap();
     draw(player);
-    draw(enemy);
 
     SDL_SetRenderDrawColor(ren,95, 158, 160, 255);
     SDL_Rect nen;
@@ -288,6 +281,10 @@ void Game::update() {
         traps[i].updateObstacle();
         traps[i].updateAnimation();
     }
+    for(size_t i = 0; i < enemies.size(); i++){
+        enemies[i].updateEnemy(player, maps, ren);
+        enemies[i].updateAnimation();
+    }
 
     if(l){
         if(player.getCurAnimation() != runl){
@@ -328,8 +325,6 @@ void Game::update() {
 
     player.updateAnimation();
 
-    enemy.updateEnemy(player, maps);
-    enemy.updateAnimation();
 
 
     for(size_t i = 0; i < maps.size(); i++) {
@@ -425,15 +420,18 @@ void Game::scroll(const int &x, const int &y) {
     for(size_t i = 0; i < coins.size(); i++) {
         coins[i].setDest(coins[i].getDX()+x, coins[i].getDY()+y);
     }
-
-    enemy.setDest(enemy.getDX()+x, enemy.getDY()+y);
-
-
+    for(size_t i = 0; i < pedestals.size(); i++){
+        pedestals[i].setDest(pedestals[i].getDX()+x, pedestals[i].getDY()+y);
+    }
+    for(size_t i = 0; i < enemies.size(); i++){
+        enemies[i].setDest(enemies[i].getDX()+x, enemies[i].getDY()+y);
+        enemies[i].setDestForBullet(x, y);
+    }
 }
 
 void Game::drawMap() {
     for(size_t i = 0; i < maps.size(); i++) {
-            draw(maps[i]);
+        draw(maps[i]);
     }
 
     for(size_t i = 0; i < traps.size(); i++){
@@ -446,7 +444,18 @@ void Game::drawMap() {
     }
 
     for(size_t i = 0; i < coins.size(); i++) {
-            draw(coins[i]);
+        draw(coins[i]);
+    }
+
+    for(size_t i = 0; i < pedestals.size(); i++){
+        draw(pedestals[i]);
+    }
+
+    for(size_t i = 0; i < enemies.size(); i++){
+        draw(enemies[i]);
+        if(enemies[i].checkShoot()){
+            draw(enemies[i].getBullet());
+        }
     }
 }
 

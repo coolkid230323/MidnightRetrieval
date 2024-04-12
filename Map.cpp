@@ -19,10 +19,12 @@ Map::~Map()
 
 void Map::loadMap(const char* filename,
                   vector<Entity> &maps, vector<Obstacle> &traps, vector<Bullet> &bullets, vector<Entity> &coins,
+                  vector<Enemy> &enemies, vector<Object> &pedestals,
                   SDL_Renderer *ren, int TILE_SIZE) {
     Entity tmp;
     Obstacle trap;
     Bullet bullet;
+    Enemy enemy;
     int current, mx, my, mw, mh;
     ifstream in(filename);
     if(!in.is_open()) {
@@ -201,10 +203,10 @@ void Map::loadMap(const char* filename,
                 tmp.setImage("Assets/pedestal.png", ren);
                 tmp.setSolid(0);
                 tmp.setSource(0, 0, 32, 32);
-                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setDest((j*TILE_SIZE)+mx-16, (i*TILE_SIZE)+my-16, TILE_SIZE*2, TILE_SIZE*2);
                 tmp.setId(current);
 
-                maps.push_back(tmp);
+                pedestals.push_back(tmp);
                 break;
             case 48:
                 bullet.setImage("Assets/bullet.png", ren);
@@ -226,10 +228,10 @@ void Map::loadMap(const char* filename,
                 tmp.setImage("Assets/pedestal.png", ren);
                 tmp.setSolid(0);
                 tmp.setSource(0, 0, 32, 32);
-                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setDest((j*TILE_SIZE)+mx-16, (i*TILE_SIZE)+my-16, TILE_SIZE*2, TILE_SIZE*2);
                 tmp.setId(current);
 
-                maps.push_back(tmp);
+                pedestals.push_back(tmp);
                 break;
             case 55:
                 tmp.setImage("Assets/coin.png", ren);
@@ -248,6 +250,42 @@ void Map::loadMap(const char* filename,
                 tmp.setId(current);
 
                 maps.push_back(tmp);
+                break;
+            case 66:
+                tmp.setImage("Assets/nen2.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 32, 32);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
+
+                enemy.setImage("Assets/enemy02.png", ren);
+                enemy.setSource(0, 0, 576, 36);
+                enemy.setCurAnimation(enemy.createCycle(1, 64, 36, 9, 10));
+                enemy.setCanShoot(1);
+                enemy.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE*2, TILE_SIZE*2);
+                enemy.setId(current);
+
+                enemies.push_back(enemy);
+                break;
+            case 99:
+                tmp.setImage("Assets/nen2.png", ren);
+                tmp.setSolid(0);
+                tmp.setSource(0, 0, 32, 32);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
+                tmp.setId(current);
+
+                maps.push_back(tmp);
+
+                enemy.setImage("Assets/enemy01.png", ren);
+                enemy.setSource(0, 0, 128, 20);
+                enemy.setCurAnimation(enemy.createCycle(1, 32, 20, 4, 10));
+                enemy.setCanShoot(0);
+                enemy.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE*2, TILE_SIZE*2);
+                enemy.setId(current);
+
+                enemies.push_back(enemy);
                 break;
             default:
                 break;
