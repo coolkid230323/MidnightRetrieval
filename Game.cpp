@@ -27,6 +27,10 @@ Game::Game() {
     countCoin.setImage("Assets/coins.png", ren);
     countCoin.setSource(0, 0, 512, 512);
 
+    countLives.setDest(1120, 0, 64, 64);
+    countLives.setImage("Assets/heart.png", ren);
+    countLives.setSource(0, 0, 280, 235);
+
     player.setDest(WIDTH/2, HEIGHT/2, 32, 32);
 
     player.setImage("Assets/player0.png", ren);
@@ -37,9 +41,11 @@ Game::Game() {
     injured = player.createCycle(4, 70, 70, 4, 10);
     player.setCurAnimation(stand);
 
-    enemy.setDest(900, 500, 32, 32);
-    enemy.setImage("Assets/health.png", ren);
-    enemy.setSource(0, 0, 348, 348);
+    enemy.setDest(900, 500, 64, 64);
+    enemy.setImage("Assets/enemy02.png", ren);
+    enemy.createCycle(1, 64, 36, 9, 10);
+    enemy.setSource(0, 0, 36, 576);
+    enemy.setCurAnimation(0);
 
     loop();
 }
@@ -93,6 +99,7 @@ void Game::render() {
     SDL_RenderFillRect(ren, &nen);
     draw(countCoin);
     draw(intToString(count), 80, 0, 255, 255, 255, font1);
+    draw(countLives);
     draw(intToString(lifeBar), 1200, 0, 255, 255, 255, font2);
 
     frameCount++;
@@ -322,6 +329,7 @@ void Game::update() {
     player.updateAnimation();
 
     enemy.updateEnemy(player, maps);
+    enemy.updateAnimation();
 
 
     for(size_t i = 0; i < maps.size(); i++) {

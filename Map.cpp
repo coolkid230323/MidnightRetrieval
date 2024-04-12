@@ -184,9 +184,9 @@ void Map::loadMap(const char* filename,
             case 44:
                 bullet.setImage("Assets/bullet.png", ren);
                 bullet.setSolid(0);
-                bullet.setSource(0, 0, 32, 32);
-                bullet.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
-                bullet.setStartPos((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my);
+                bullet.setSource(0, 0, 20, 20);
+                bullet.setDest((j*TILE_SIZE)+mx+8, (i*TILE_SIZE)+my+8, TILE_SIZE/2, TILE_SIZE/2);
+                bullet.setStartPos((j*TILE_SIZE)+mx+8, (i*TILE_SIZE)+my+8);
                 bullet.loadBullet(bullets, 4);
                 bullet.setId(current);
 
@@ -209,9 +209,9 @@ void Map::loadMap(const char* filename,
             case 48:
                 bullet.setImage("Assets/bullet.png", ren);
                 bullet.setSolid(0);
-                bullet.setSource(0, 0, 32, 32);
-                bullet.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
-                bullet.setStartPos((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my);
+                bullet.setSource(0, 0, 20, 20);
+                bullet.setDest((j*TILE_SIZE)+mx+8, (i*TILE_SIZE)+my+8, TILE_SIZE/2, TILE_SIZE/2);
+                bullet.setStartPos((j*TILE_SIZE)+mx+8, (i*TILE_SIZE)+my+8);
                 bullet.loadBullet(bullets, 8);
                 bullet.setId(current);
 

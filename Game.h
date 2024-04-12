@@ -57,6 +57,7 @@ private:
     Entity player;
     Enemy enemy;
     Object countCoin;
+    Object countLives;
     Map m_Map;
 
     vector<Entity> maps;
