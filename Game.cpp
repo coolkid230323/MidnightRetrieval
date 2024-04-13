@@ -5,11 +5,33 @@ Game::Game() {
     if(SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &win, &ren) < 0) cout << "Failed at SDL_CreateWindowAndRenderer()" << SDL_GetError() << endl;
     SDL_SetWindowTitle(win, "Midnight Retrieval");
 
+    countCoin = new Object();
+    countLives = new Object();
+    menuBackGround = new Object();
+    menuButton = new Object();
+    optionButton = new Object();
+    quitButton = new Object();
+    continueButton = new Object();
+    resumeButton = new Object();
+    playButton = new Object();
+    victoryLogo = new Object();
+    gameOverLogo = new Object();
+
+
     background = LoadTexture("Assets/background.png", ren);
     CrossfadeTexture(ren, background, 1000);
 
+    (*menuBackGround).setImage("Assets/menuBackGround.png", ren);
+    (*menuBackGround).setDest(0, 0, WIDTH, HEIGHT);
+    (*menuBackGround).setSource(0, 0, 1808, 1017);
+
+    (*optionButton).setImage("Assets/optionbutton.png", ren);
+    (*optionButton).setDest(1216, 0, 64, 64);
+    (*optionButton).setSource(0, 0, 479, 479);
+
     mainMusic.load("Sounds/mainMusic.wav");
     mainMusic.play(-1);
+    mainMusic.pause();
     pickCoin.load("Sounds/pickcoin.wav");
     bulletSound.load("Sounds/bulletSound.wav");
 
@@ -17,19 +39,30 @@ Game::Game() {
 
     TTF_Init();
     running = true;
+    showingMenu = true;
+    clickingOptions = false;
+    playing = false;
+    victory = false;
+    defeat = false;
     counts = 0;
     lifeBar = 100;
     font1 = TTF_OpenFont("Fonts/GameName.ttf", 70);
     font2 = TTF_OpenFont("Fonts/GameName.ttf", 70);
     //mapX = mapY = 0;
 
-    countCoin.setDest(0, 0, 64, 64);
-    countCoin.setImage("Assets/coins.png", ren);
-    countCoin.setSource(0, 0, 512, 512);
+    (*menuButton).setSource(0, 0, 706, 320);
+    (*quitButton).setSource(0, 0, 706, 320);
+    (*playButton).setSource(0, 0, 706, 320);
+    (*resumeButton).setSource(0, 0, 706, 320);
+    (*continueButton).setSource(0, 0, 706, 320);
 
-    countLives.setDest(1120, 0, 64, 64);
-    countLives.setImage("Assets/heart.png", ren);
-    countLives.setSource(0, 0, 280, 235);
+    (*countCoin).setDest(0, 0, 64, 64);
+    (*countCoin).setImage("Assets/coins.png", ren);
+    (*countCoin).setSource(0, 0, 512, 512);
+
+    (*countLives).setDest(930, 0, 64, 64);
+    (*countLives).setImage("Assets/heart.png", ren);
+    (*countLives).setSource(0, 0, 280, 235);
 
     player.setDest(WIDTH/2, HEIGHT/2, 32, 32);
 
@@ -53,6 +86,15 @@ Game::~Game() {
     IMG_Quit();
     SDL_Quit();
     SDL_DestroyTexture(background);
+    delete menuButton;
+    delete optionButton;
+    delete quitButton;
+    delete resumeButton;
+    delete playButton;
+    delete continueButton;
+    delete victoryLogo;
+    delete gameOverLogo;
+    delete menuBackGround;
 }
 
 void Game::loop() {
@@ -65,9 +107,25 @@ void Game::loop() {
           frameCount = 0;
         }
 
-        //render();
-        input();
-        update();
+        if(showingMenu){
+            mainMusic.pause();
+            showMenu();
+        }
+        else{
+            mainMusic.resume();
+        }
+
+        if(!showingMenu && playing && !defeat){
+            input();
+            update();
+        }
+        else if(clickingOptions){
+            showOptions();
+        }
+        else if(defeat && !playing){
+            showGameOver();
+        }
+
         render();
     }
 }
@@ -80,20 +138,47 @@ void Game::render() {
     rect.h = HEIGHT;
     SDL_RenderFillRect(ren, &rect);
 
-    drawMap();
-    draw(player);
+    //draw(menuBackGround);
+    if(showingMenu){
+        draw(*menuBackGround);
+        draw(*playButton);
+        draw(*quitButton);
+    }
+    else if(!showingMenu && playing){
+        drawMap();
+        draw(player);
 
-    SDL_SetRenderDrawColor(ren,95, 158, 160, 255);
-    SDL_Rect nen;
-    nen.x = 0;
-    nen.y = 0;
-    nen.w = WIDTH;
-    nen.h = 64;
-    SDL_RenderFillRect(ren, &nen);
-    draw(countCoin);
-    draw(intToString(counts), 80, 0, 255, 255, 255, font1);
-    draw(countLives);
-    draw(intToString(lifeBar), 1200, 0, 255, 255, 255, font2);
+
+        SDL_SetRenderDrawColor(ren,95, 158, 160, 255);
+        SDL_Rect nen;
+        nen.x = 0;
+        nen.y = 0;
+        nen.w = WIDTH;
+        nen.h = 64;
+        SDL_RenderFillRect(ren, &nen);
+        draw(*countCoin);
+        draw(intToString(counts), 80, 0, 255, 255, 255, font1);
+        draw(*countLives);
+        draw(intToString(lifeBar), 1000, 0, 255, 255, 255, font2);
+
+        draw(*optionButton);
+
+    }
+    else if(clickingOptions && !showingMenu && !playing && !defeat){
+        drawMap();
+        draw(player);
+
+        draw(*menuButton);
+        draw(*continueButton);
+        draw(*quitButton);
+    }
+    else if(defeat){
+        drawMap();
+        draw(player);
+
+        draw(*menuButton);
+    }
+
 
     frameCount++;
     int timerFPS = SDL_GetTicks()-lastFrame;
@@ -141,31 +226,168 @@ void Game::draw(const char* msg, const int &x, const int &y, const int &r, const
     SDL_DestroyTexture(tex);
 }
 
+void Game::showMenu()
+{
+    SDL_Event e;
+    (*playButton).setDest(150, 150, 320, 140);
+    (*quitButton).setDest(150, 350, 320, 140);
+
+
+    while(SDL_PollEvent(&e)){
+        if(e.type == SDL_QUIT) {running = false; cout << "Quitting" << endl;}
+        Uint32 mouseState = SDL_GetMouseState(&mousex, &mousey);
+
+        if(mousex >= (*playButton).getDX() && mousex <= (*playButton).getDX() + (*playButton).getDW()
+           && mousey >= (*playButton).getDY() && mousey <= (*playButton).getDY() + (*playButton).getDH())
+        {
+            (*playButton).setImage("Assets/playbutton02.png", ren);
+
+            if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                playing = true;
+                showingMenu = false;
+
+                counts = 0;
+                lifeBar = 100;
+                //m_Map.clearMap(maps, traps, bullets, coins, enemies, pedestals, mushrooms);
+                //m_Map.loadMap("Assets/1.level", maps, traps, bullets, coins, enemies, pedestals, mushrooms, ren, TILE_SIZE);
+            }
+        }
+        else{
+            (*playButton).setImage("Assets/playbutton01.png", ren);
+        }
+
+        if(mousex >= (*quitButton).getDX() && mousex <= (*quitButton).getDX() + (*quitButton).getDW()
+           && mousey >= (*quitButton).getDY() && mousey <= (*quitButton).getDY() + (*quitButton).getDH())
+        {
+            (*quitButton).setImage("Assets/quitbutton02.png", ren);
+
+            if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                running = false;
+            }
+        }
+        else{
+            (*quitButton).setImage("Assets/quitbutton01.png", ren);
+        }
+
+    }
+
+
+}
+
+void Game::showGameOver()
+{
+    SDL_Event e;
+    (*menuButton).setDest(480, 350, 320, 140);
+
+    while(SDL_PollEvent(&e)){
+        if(e.type == SDL_QUIT) {running = false; cout << "Quitting" << endl;}
+        Uint32 mouseState = SDL_GetMouseState(&mousex, &mousey);
+
+        if(mousex >= (*menuButton).getDX() && mousex <= (*menuButton).getDX() + (*menuButton).getDW()
+           && mousey >= (*menuButton).getDY() && mousey <= (*menuButton).getDY() + (*menuButton).getDH())
+        {
+            (*menuButton).setImage("Assets/menubutton02.png", ren);
+
+            if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                playing = false;
+                defeat = false;
+                showingMenu = true;
+                clickingOptions = false;
+            }
+        }
+        else{
+            (*menuButton).setImage("Assets/menubutton01.png", ren);
+        }
+    }
+
+}
+
+void Game::showOptions()
+{
+    SDL_Event e;
+    (*continueButton).setDest(480, 150, 320, 140);
+    (*menuButton).setDest(480, 350, 320, 140);
+    (*quitButton).setDest(480, 550, 320, 140);
+
+    while(SDL_PollEvent(&e)){
+        if(e.type == SDL_QUIT) {running = false; cout << "Quitting" << endl;}
+        Uint32 mouseState = SDL_GetMouseState(&mousex, &mousey);
+
+        if(mousex >= (*continueButton).getDX() && mousex <= (*continueButton).getDX() + (*continueButton).getDW()
+           && mousey >= (*continueButton).getDY() && mousey <= (*continueButton).getDY() + (*continueButton).getDH())
+        {
+            (*continueButton).setImage("Assets/continuebutton02.png", ren);
+
+            if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                playing = true;
+                clickingOptions = false;
+            }
+        }
+        else{
+            (*continueButton).setImage("Assets/continuebutton01.png", ren);
+        }
+
+        if(mousex >= (*menuButton).getDX() && mousex <= (*menuButton).getDX() + (*menuButton).getDW()
+           && mousey >= (*menuButton).getDY() && mousey <= (*menuButton).getDY() + (*menuButton).getDH())
+        {
+            (*menuButton).setImage("Assets/menubutton02.png", ren);
+
+            if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                playing = false;
+                clickingOptions = false;
+                showingMenu = true;
+            }
+        }
+        else{
+            (*menuButton).setImage("Assets/menubutton01.png", ren);
+        }
+
+        if(mousex >= (*quitButton).getDX() && mousex <= (*quitButton).getDX() + (*quitButton).getDW()
+           && mousey >= (*quitButton).getDY() && mousey <= (*quitButton).getDY() + (*quitButton).getDH())
+        {
+            (*quitButton).setImage("Assets/quitbutton02.png", ren);
+
+            if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                running = false;
+            }
+        }
+        else{
+            (*quitButton).setImage("Assets/quitbutton01.png", ren);
+        }
+
+    }
+}
+
+void Game::showWinGame()
+{
+
+}
+
 void Game::input() {
     SDL_Event e;
+
+
     while(SDL_PollEvent(&e)) {
         if(e.type == SDL_QUIT) {running = false; cout << "Quitting" << endl;}
+        Uint32 mouseState = SDL_GetMouseState(&mousex, &mousey);
+
         if(e.type == SDL_KEYDOWN) {
             if(e.key.keysym.sym == SDLK_ESCAPE) running=false;
             if(e.key.keysym.sym == SDLK_LEFT) {
                 l = 1;
                 r = 0;
-                //cout << "left" << endl;
             }
             if(e.key.keysym.sym == SDLK_RIGHT) {
                 r = 1;
                 l = 0;
-                //cout << "right" << endl;
             }
             if(e.key.keysym.sym == SDLK_UP) {
                 u = 1;
                 d = 0;
-                //cout << "up" << endl;
             }
             if(e.key.keysym.sym == SDLK_DOWN) {
                 d = 1;
                 u = 0;
-                //cout << "down" << endl;
             }
             if(e.key.keysym.sym == SDLK_j){
                 blue = 1;
@@ -218,7 +440,15 @@ void Game::input() {
 
         }
 
-        SDL_GetMouseState(&mousex, &mousey);
+        if(mousex >= (*optionButton).getDX() && mousex <= (*optionButton).getDX() + (*optionButton).getDW()
+           && mousey >= (*optionButton).getDY() && mousey <= (*optionButton).getDY() + (*optionButton).getDH())
+        {
+            if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                clickingOptions = true;
+                playing = false;
+            }
+        }
+
     }
 
 
@@ -264,9 +494,11 @@ void Game::CrossfadeTexture(SDL_Renderer* renderer, SDL_Texture* texture, const 
 
 
 void Game::update() {
+    cout << mousex << " " << mousey << endl;
 
-    if(lifeBar == 0){
-        running = false;
+    if(lifeBar <= 0){
+        playing = false;
+        defeat = true;
     }
 
     for(size_t i = 0; i < bullets.size(); i++){

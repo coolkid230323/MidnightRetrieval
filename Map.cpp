@@ -83,7 +83,7 @@ void Map::loadMap(const char* filename,
                 maps.push_back(tmp);
                 break;
             case 3:
-                tmp.setImage("Assets/health.png", ren);
+                tmp.setImage("Assets/continuebutton01.png", ren);
                 tmp.setSolid(0);
                 tmp.setSource(0, 0, 400, 400);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
@@ -313,3 +313,36 @@ void Map::loadMap(const char* filename,
     }
     in.close();
 }
+
+/*void Map::clearMap(vector<Entity> &maps, vector<Obstacle> &traps, vector<Bullet> &bullets, vector<Entity> &coins,
+                vector<Enemy> &enemies, vector<Object> &pedestals, vector<Entity> &mushrooms)
+{
+    if(!maps.empty()){
+        maps.clear();
+    }
+
+    if(!traps.empty()){
+        traps.clear();
+    }
+
+    if(!bullets.empty()){
+        bullets.clear();
+    }
+
+    if(!coins.empty()){
+        coins.clear();
+    }
+
+    if(!enemies.empty()){
+        enemies.clear();
+    }
+
+    if(!pedestals.empty()){
+        pedestals.clear();
+    }
+
+    if(!mushrooms.empty()){
+        mushrooms.clear();
+    }
+
+}*/

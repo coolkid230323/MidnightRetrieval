@@ -23,8 +23,9 @@ public:
                 vector<Entity> &maps, vector<Obstacle> &traps, vector<Bullet> &bullets, vector<Entity> &coins,
                 vector<Enemy> &enemies, vector<Object> &pedestals, vector<Entity> &mushrooms,
                 SDL_Renderer *ren, int TILE_SIZE);
-    //void drawMap();
-    //void scroll(int x, int y);
+    /*void clearMap(vector<Entity> &maps, vector<Obstacle> &traps, vector<Bullet> &bullets, vector<Entity> &coins,
+                vector<Enemy> &enemies, vector<Object> &pedestals, vector<Entity> &mushrooms);*/
+
     int getRandom() const
     {
          //srand(time(NULL));

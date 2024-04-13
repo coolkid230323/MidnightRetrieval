@@ -29,6 +29,10 @@ public:
     Game();
     ~Game();
     void loop();
+    void showMenu();
+    void showGameOver();
+    void showOptions();
+    void showWinGame();
     void update();
     void input();
     void render();
@@ -48,16 +52,33 @@ private:
     TTF_Font* font2 = nullptr;
 
     bool running;
-    bool showMenu;
+    bool showingMenu;
+    bool playing;
+    bool clickingOptions;
+    bool victory;
+    bool defeat;
+
     int counts;
     int lifeBar;
     int frameCount, timerFPS, lastFrame;
     int mousex, mousey;
 
     Entity player;
-    Object countCoin;
-    Object countLives;
+    Object *countCoin = nullptr;
+    Object *countLives = nullptr;
     Map m_Map;
+
+    Object *menuButton = nullptr;
+    Object *optionButton = nullptr;
+    Object *quitButton = nullptr;
+    Object *resumeButton = nullptr;
+    Object *playButton = nullptr;
+    Object *continueButton = nullptr;
+
+    Object *victoryLogo = nullptr;
+    Object *gameOverLogo = nullptr;
+
+    Object *menuBackGround = nullptr;
 
     vector<Entity> maps;
     vector<Obstacle> traps;
