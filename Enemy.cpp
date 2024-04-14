@@ -19,7 +19,7 @@ Enemy::~Enemy()
 void Enemy::check(const Entity &player)
 {
     int dis = sqrt((getDX() - player.getDX())*(getDX() - player.getDX()) + (getDY() - player.getDY())*(getDY() - player.getDY()));
-    if(dis <= 400){
+    if(dis <= 300){
         canFind = true;
     }
     else{

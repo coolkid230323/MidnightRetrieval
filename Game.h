@@ -50,6 +50,7 @@ private:
     SDL_Texture* background = nullptr;
     TTF_Font* font1 = nullptr;
     TTF_Font* font2 = nullptr;
+    TTF_Font* font3 = nullptr;
 
     bool running;
     bool showingMenu;
@@ -57,11 +58,15 @@ private:
     bool clickingOptions;
     bool victory;
     bool defeat;
+    bool collisionWithEnemy;
 
     int counts;
     int lifeBar;
     int frameCount, timerFPS, lastFrame;
     int mousex, mousey;
+    int level;
+
+    const char* levels[10];
 
     Entity player;
     Object *countCoin = nullptr;
@@ -77,6 +82,7 @@ private:
 
     Object *victoryLogo = nullptr;
     Object *gameOverLogo = nullptr;
+    Object *scoreBackground = nullptr;
 
     Object *menuBackGround = nullptr;
 
@@ -92,6 +98,8 @@ private:
     Audio mainMusic;
     Audio pickCoin;
     Audio bulletSound;
+    Audio pickMushRoom;
+    Audio mouseClick;
 
     int mapX, mapY;
     int veloc;

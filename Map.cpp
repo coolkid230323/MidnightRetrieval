@@ -48,16 +48,16 @@ void Map::loadMap(const char* filename,
             case 0:
                 tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 16, 16);
+                tmp.setSource(0, 0, 256, 256);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
                 maps.push_back(tmp);
                 break;
             case 1:
-                tmp.setImage("Assets/wall03.png", ren);
+                tmp.setImage("Assets/wall00.png", ren);
                 tmp.setSolid(1);
-                tmp.setSource(0, 0, 50, 50);
+                tmp.setSource(0, 0, 64, 64);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -73,7 +73,7 @@ void Map::loadMap(const char* filename,
                 maps.push_back(tmp);
                 break;
             case 2:
-                tmp.setImage("Assets/grid02.png", ren);
+                tmp.setImage("Assets/door.png", ren);
                 tmp.setSolid(0);
                 tmp.setSource(0, 0, 128, 128);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
@@ -108,7 +108,7 @@ void Map::loadMap(const char* filename,
 
                 tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 16, 16);
+                tmp.setSource(0, 0, 256, 256);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -122,16 +122,16 @@ void Map::loadMap(const char* filename,
                 trap.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 trap.setId(current);
                 trap.setVelocity(0, 3);
-                trap.setBoundl(trap.getDX() - 32*5);
-                trap.setBoundr(trap.getDX() + 32*5);
-                trap.setBoundu(trap.getDY() - 32*5);
-                trap.setBoundd(trap.getDY() + 32*5);
+                trap.setBoundl(trap.getDX() - 32*3);
+                trap.setBoundr(trap.getDX() + 32*3);
+                trap.setBoundu(trap.getDY() - 32*3);
+                trap.setBoundd(trap.getDY() + 32*3);
 
                 traps.push_back(trap);
 
                 tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 16, 16);
+                tmp.setSource(0, 0, 256, 256);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -154,7 +154,7 @@ void Map::loadMap(const char* filename,
 
                 tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 16, 16);
+                tmp.setSource(0, 0, 256, 256);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -168,16 +168,16 @@ void Map::loadMap(const char* filename,
                 trap.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 trap.setId(current);
                 trap.setVelocity(0, -3);
-                trap.setBoundl(trap.getDX() - 32*5);
-                trap.setBoundr(trap.getDX() + 32*5);
-                trap.setBoundu(trap.getDY() - 32*5);
-                trap.setBoundd(trap.getDY() + 32*5);
+                trap.setBoundl(trap.getDX() - 32*3);
+                trap.setBoundr(trap.getDX() + 32*3);
+                trap.setBoundu(trap.getDY() - 32*3);
+                trap.setBoundd(trap.getDY() + 32*3);
 
                 traps.push_back(trap);
 
                 tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 16, 16);
+                tmp.setSource(0, 0, 256, 256);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -194,7 +194,7 @@ void Map::loadMap(const char* filename,
 
                 tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 32, 32);
+                tmp.setSource(0, 0, 256, 256);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -219,7 +219,7 @@ void Map::loadMap(const char* filename,
 
                 tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 32, 32);
+                tmp.setSource(0, 0, 256, 256);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -245,7 +245,7 @@ void Map::loadMap(const char* filename,
 
                 tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 32, 32);
+                tmp.setSource(0, 0, 256, 256);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -254,7 +254,7 @@ void Map::loadMap(const char* filename,
             case 66:
                 tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 32, 32);
+                tmp.setSource(0, 0, 256, 256);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -281,7 +281,7 @@ void Map::loadMap(const char* filename,
 
                 tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 32, 32);
+                tmp.setSource(0, 0, 256, 256);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -290,7 +290,7 @@ void Map::loadMap(const char* filename,
             case 99:
                 tmp.setImage("Assets/nen2.png", ren);
                 tmp.setSolid(0);
-                tmp.setSource(0, 0, 32, 32);
+                tmp.setSource(0, 0, 256, 256);
                 tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
@@ -314,7 +314,7 @@ void Map::loadMap(const char* filename,
     in.close();
 }
 
-/*void Map::clearMap(vector<Entity> &maps, vector<Obstacle> &traps, vector<Bullet> &bullets, vector<Entity> &coins,
+void Map::clearMap(vector<Entity> &maps, vector<Obstacle> &traps, vector<Bullet> &bullets, vector<Entity> &coins,
                 vector<Enemy> &enemies, vector<Object> &pedestals, vector<Entity> &mushrooms)
 {
     if(!maps.empty()){
@@ -345,4 +345,4 @@ void Map::loadMap(const char* filename,
         mushrooms.clear();
     }
 
-}*/
+}

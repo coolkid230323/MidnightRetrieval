@@ -5,7 +5,7 @@ Game::Game() {
     if(SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &win, &ren) < 0) cout << "Failed at SDL_CreateWindowAndRenderer()" << SDL_GetError() << endl;
     SDL_SetWindowTitle(win, "Midnight Retrieval");
 
-    countCoin = new Object();
+    /*countCoin = new Object();
     countLives = new Object();
     menuBackGround = new Object();
     menuButton = new Object();
@@ -16,7 +16,31 @@ Game::Game() {
     playButton = new Object();
     victoryLogo = new Object();
     gameOverLogo = new Object();
+    scoreBackground = new Object();*/
 
+    try {
+
+        countCoin = new Object();
+        countLives = new Object();
+        menuBackGround = new Object();
+        menuButton = new Object();
+        optionButton = new Object();
+        quitButton = new Object();
+        continueButton = new Object();
+        resumeButton = new Object();
+        playButton = new Object();
+        victoryLogo = new Object();
+        gameOverLogo = new Object();
+        scoreBackground = new Object();
+    } catch (std::bad_alloc& e) {
+        std::cerr << "Memory allocation failed: " << e.what() << std::endl;
+
+    }
+
+    levels[0] = "Assets/level_1.txt";
+    levels[1] = "Assets/level_2.txt";
+    levels[2] = "Assets/level_3.txt";
+    level = 0;
 
     background = LoadTexture("Assets/background.png", ren);
     CrossfadeTexture(ren, background, 1000);
@@ -29,13 +53,27 @@ Game::Game() {
     (*optionButton).setDest(1216, 0, 64, 64);
     (*optionButton).setSource(0, 0, 479, 479);
 
+    (*victoryLogo).setImage("Assets/victorylogo.png", ren);
+    (*victoryLogo).setDest(480, 50, 300, 140);
+    (*victoryLogo).setSource(0, 0, 918, 428);
+
+    (*gameOverLogo).setImage("Assets/gameoverlogo.png", ren);
+    (*gameOverLogo).setDest(480, 50, 300, 140);
+    (*gameOverLogo).setSource(0, 0, 783, 446);
+
+    (*scoreBackground).setImage("Assets/scorebackground.png", ren);
+    (*scoreBackground).setDest(300, 200, 700, 500);
+    (*scoreBackground).setSource(0, 0, 1260, 1204);
+
     mainMusic.load("Sounds/mainMusic.wav");
     mainMusic.play(-1);
     mainMusic.pause();
     pickCoin.load("Sounds/pickcoin.wav");
     bulletSound.load("Sounds/bulletSound.wav");
+    pickMushRoom.load("Sounds/pickmushroom.wav");
+    mouseClick.load("Sounds/mouseclick.wav");
 
-    m_Map.loadMap("Assets/1.level", maps, traps, bullets, coins, enemies, pedestals, mushrooms, ren, TILE_SIZE);
+    m_Map.loadMap(levels[level], maps, traps, bullets, coins, enemies, pedestals, mushrooms, ren, TILE_SIZE);
 
     TTF_Init();
     running = true;
@@ -44,10 +82,12 @@ Game::Game() {
     playing = false;
     victory = false;
     defeat = false;
+    collisionWithEnemy = false;
     counts = 0;
     lifeBar = 100;
     font1 = TTF_OpenFont("Fonts/GameName.ttf", 70);
     font2 = TTF_OpenFont("Fonts/GameName.ttf", 70);
+    font3 = TTF_OpenFont("Fonts/GameName.ttf", 200);
     //mapX = mapY = 0;
 
     (*menuButton).setSource(0, 0, 706, 320);
@@ -80,12 +120,14 @@ Game::Game() {
 Game::~Game() {
     TTF_CloseFont(font1);
     TTF_CloseFont(font2);
+    TTF_CloseFont(font3);
     TTF_Quit();
     SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(win);
     IMG_Quit();
     SDL_Quit();
     SDL_DestroyTexture(background);
+
     delete menuButton;
     delete optionButton;
     delete quitButton;
@@ -95,6 +137,26 @@ Game::~Game() {
     delete victoryLogo;
     delete gameOverLogo;
     delete menuBackGround;
+    delete scoreBackground;
+    delete countCoin;
+    delete countLives;
+
+
+    countCoin = nullptr;
+    countLives = nullptr;
+
+    menuButton = nullptr;
+    optionButton = nullptr;
+    quitButton = nullptr;
+    resumeButton = nullptr;
+    playButton = nullptr;
+    continueButton = nullptr;
+
+    victoryLogo = nullptr;
+    gameOverLogo = nullptr;
+    scoreBackground = nullptr;
+
+    menuBackGround = nullptr;
 }
 
 void Game::loop() {
@@ -124,6 +186,9 @@ void Game::loop() {
         }
         else if(defeat && !playing){
             showGameOver();
+        }
+        else if(victory){
+            showWinGame();
         }
 
         render();
@@ -176,6 +241,18 @@ void Game::render() {
         drawMap();
         draw(player);
 
+        draw(*scoreBackground);
+        draw(*gameOverLogo);
+        draw(intToString(counts), 600, 300, 231, 146, 139, font3);
+        draw(*menuButton);
+    }
+    else if(victory){
+        drawMap();
+        draw(player);
+
+        draw(*scoreBackground);
+        draw(*victoryLogo);
+        draw(intToString(counts), 600, 300, 231, 146, 139, font3);
         draw(*menuButton);
     }
 
@@ -243,13 +320,18 @@ void Game::showMenu()
             (*playButton).setImage("Assets/playbutton02.png", ren);
 
             if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                mouseClick.play(0);
+                SDL_Delay(500);
                 playing = true;
                 showingMenu = false;
 
+                l = r = u = d = false;
+
                 counts = 0;
                 lifeBar = 100;
-                //m_Map.clearMap(maps, traps, bullets, coins, enemies, pedestals, mushrooms);
-                //m_Map.loadMap("Assets/1.level", maps, traps, bullets, coins, enemies, pedestals, mushrooms, ren, TILE_SIZE);
+                level = 0;
+                m_Map.clearMap(maps, traps, bullets, coins, enemies, pedestals, mushrooms);
+                m_Map.loadMap(levels[level], maps, traps, bullets, coins, enemies, pedestals, mushrooms, ren, TILE_SIZE);
             }
         }
         else{
@@ -262,6 +344,8 @@ void Game::showMenu()
             (*quitButton).setImage("Assets/quitbutton02.png", ren);
 
             if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                mouseClick.play(0);
+                SDL_Delay(500);
                 running = false;
             }
         }
@@ -277,7 +361,7 @@ void Game::showMenu()
 void Game::showGameOver()
 {
     SDL_Event e;
-    (*menuButton).setDest(480, 350, 320, 140);
+    (*menuButton).setDest(480, 500, 320, 140);
 
     while(SDL_PollEvent(&e)){
         if(e.type == SDL_QUIT) {running = false; cout << "Quitting" << endl;}
@@ -289,6 +373,8 @@ void Game::showGameOver()
             (*menuButton).setImage("Assets/menubutton02.png", ren);
 
             if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                mouseClick.play(0);
+                SDL_Delay(500);
                 playing = false;
                 defeat = false;
                 showingMenu = true;
@@ -319,6 +405,8 @@ void Game::showOptions()
             (*continueButton).setImage("Assets/continuebutton02.png", ren);
 
             if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                mouseClick.play(0);
+                SDL_Delay(500);
                 playing = true;
                 clickingOptions = false;
             }
@@ -333,6 +421,8 @@ void Game::showOptions()
             (*menuButton).setImage("Assets/menubutton02.png", ren);
 
             if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                mouseClick.play(0);
+                SDL_Delay(500);
                 playing = false;
                 clickingOptions = false;
                 showingMenu = true;
@@ -348,6 +438,8 @@ void Game::showOptions()
             (*quitButton).setImage("Assets/quitbutton02.png", ren);
 
             if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                mouseClick.play(0);
+                SDL_Delay(500);
                 running = false;
             }
         }
@@ -360,7 +452,31 @@ void Game::showOptions()
 
 void Game::showWinGame()
 {
+    SDL_Event e;
+    (*menuButton).setDest(480, 500, 320, 140);
 
+    while(SDL_PollEvent(&e)){
+        if(e.type == SDL_QUIT) {running = false; cout << "Quitting" << endl;}
+        Uint32 mouseState = SDL_GetMouseState(&mousex, &mousey);
+
+        if(mousex >= (*menuButton).getDX() && mousex <= (*menuButton).getDX() + (*menuButton).getDW()
+           && mousey >= (*menuButton).getDY() && mousey <= (*menuButton).getDY() + (*menuButton).getDH())
+        {
+            (*menuButton).setImage("Assets/menubutton02.png", ren);
+
+            if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                mouseClick.play(0);
+                SDL_Delay(500);
+                playing = false;
+                victory = false;
+                showingMenu = true;
+                clickingOptions = false;
+            }
+        }
+        else{
+            (*menuButton).setImage("Assets/menubutton01.png", ren);
+        }
+    }
 }
 
 void Game::input() {
@@ -444,6 +560,8 @@ void Game::input() {
            && mousey >= (*optionButton).getDY() && mousey <= (*optionButton).getDY() + (*optionButton).getDH())
         {
             if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                mouseClick.play(0);
+                SDL_Delay(500);
                 clickingOptions = true;
                 playing = false;
             }
@@ -553,19 +671,18 @@ void Game::update() {
 
     player.updateAnimation();
 
-
+    if(level > 1){
+        playing = false;
+        victory = true;
+        return;
+    }
 
     for(size_t i = 0; i < maps.size(); i++) {
         Collision c;
-        if(c.collision(player, maps[i]) && maps[i].getId() == 03) {
-            maps.erase(maps.begin() + i);
-
-            for(size_t j = 0; j < maps.size(); j++){
-                if(maps[j].getId() == 02){
-                    maps[j].setImage("Assets/nen3.png", ren);
-                    maps[j].setSolid(0);
-                }
-            }
+        if(c.collision(player, maps[i]) && maps[i].getId() == 2){
+            level++;
+            m_Map.clearMap(maps, traps, bullets, coins, enemies, pedestals, mushrooms);
+            m_Map.loadMap(levels[level], maps, traps, bullets, coins, enemies, pedestals, mushrooms, ren, TILE_SIZE);
         }
         if(c.collision(player, maps[i]) && maps[i].getSolid()) {
 
@@ -611,6 +728,7 @@ void Game::update() {
     for(size_t i = 0; i < mushrooms.size(); i++){
         Collision c;
         if(c.collision(mushrooms[i], player)){
+            pickMushRoom.play(0);
             mushrooms.erase(mushrooms.begin() + i);
             draw(intToString(lifeBar), 1200, 0, 95, 158, 160, font2);
             lifeBar+=1;
@@ -622,7 +740,7 @@ void Game::update() {
         Collision c;
         if(c.collision(bullets[i], player)){
             bulletSound.play(0);
-            player.setCurAnimation(injured);
+            //player.setCurAnimation(injured);
             draw(intToString(lifeBar), 1200, 0, 95, 158, 160, font2);
             lifeBar--;
             //draw(intToString(lifeBar), 1200, 0, 255, 255, 255, font2);
@@ -632,11 +750,26 @@ void Game::update() {
     for(size_t i = 0; i < enemies.size(); i++){
         Collision c;
         if(enemies[i].getCollisionWithPlayer()){
+            bulletSound.play(0);
             draw(intToString(lifeBar), 1200, 0, 95, 158, 160, font2);
             lifeBar--;
             enemies[i].setCollisionWithPlayer(false);
         }
     }
+
+    /*for(size_t i = 0; i < enemies.size(); i++){
+        Collision c;
+        if(c.collision(player, enemies[i]) && !collisionWithEnemy){
+            collisionWithEnemy = true;
+            bulletSound.play(0);
+            draw(intToString(lifeBar), 1200, 0, 95, 158, 160, font2);
+            lifeBar--;
+            break;
+        }
+        else{
+            collisionWithEnemy = false;
+        }
+    }*/
 
 }
 
@@ -671,6 +804,7 @@ void Game::scroll(const int &x, const int &y) {
 }
 
 void Game::drawMap() {
+
     for(size_t i = 0; i < maps.size(); i++) {
         draw(maps[i]);
     }
