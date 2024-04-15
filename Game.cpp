@@ -106,12 +106,12 @@ Game::Game() {
 
     player.setDest(WIDTH/2, HEIGHT/2, 32, 32);
 
-    player.setImage("Assets/player0.png", ren);
-    player.setSource(0, 0, 70, 70);
-    stand = player.createCycle(1, 70, 70, 4, 10);
-    runr = player.createCycle(2, 70, 70, 4, 4);
-    runl = player.createCycle(3, 70, 70, 4, 4);
-    injured = player.createCycle(4, 70, 70, 4, 10);
+    player.setImage("Assets/main.png", ren);
+    player.setSource(0, 0, 324, 348);
+    stand = player.createCycle(1, 81, 116, 4, 10);
+    runr = player.createCycle(2, 81, 116, 4, 4);
+    runl = player.createCycle(3, 81, 116, 4, 4);
+    //injured = player.createCycle(4, 70, 70, 4, 10);
     player.setCurAnimation(stand);
 
     loop();
@@ -644,25 +644,19 @@ void Game::update() {
     if(l){
         if(player.getCurAnimation() != runl){
             player.setCurAnimation(runl);
-            //player.setDest(player.getDX() - VELOC, player.getDY());
         }
-        //player.setDest(player.getDX() - VELOC, player.getDY());
         scroll(VELOC, 0);
     }
     if(r){
         if(player.getCurAnimation() != runr){
-            //player.setCurAnimation(runr);
-            //player.setDest(player.getDX() + VELOC, player.getDY());}
+            player.setCurAnimation(runr);
         }
-        //player.setDest(player.getDX() + VELOC, player.getDY());
         scroll(-VELOC, 0);
     }
     if(u) {
-        //player.setDest(player.getDX(), player.getDY() - VELOC);
         scroll(0, VELOC);
     }
     if(d) {
-        //player.setDest(player.getDX(), player.getDY() + VELOC);
         scroll(0, -VELOC);
     }
     if(white){
@@ -714,6 +708,14 @@ void Game::update() {
         }
     }
 
+    for(size_t i = 0; i < traps.size(); i++){
+        Collision c;
+        if(c.collision(player, traps[i])){
+            playing = false;
+            defeat = true;
+        }
+    }
+
     for(size_t i = 0; i < coins.size(); i++){
         Collision c;
         if(c.collision(coins[i], player)){
@@ -757,20 +759,18 @@ void Game::update() {
         }
     }
 
-    /*for(size_t i = 0; i < enemies.size(); i++){
+    for(size_t i = 0; i < enemies.size(); i++){
         Collision c;
         if(c.collision(player, enemies[i]) && !collisionWithEnemy){
             collisionWithEnemy = true;
             bulletSound.play(0);
             draw(intToString(lifeBar), 1200, 0, 95, 158, 160, font2);
             lifeBar--;
-            break;
         }
-        else{
+        if(i == enemies.size() - 1 && !(c.collision(player, enemies[i]))){
             collisionWithEnemy = false;
         }
-    }*/
-
+    }
 }
 
 void Game::scroll(const int &x, const int &y) {

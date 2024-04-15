@@ -200,10 +200,10 @@ void Map::loadMap(const char* filename,
 
                 maps.push_back(tmp);
 
-                tmp.setImage("Assets/pedestal.png", ren);
+                tmp.setImage("Assets/pedestal1.png", ren);
                 tmp.setSolid(0);
                 tmp.setSource(0, 0, 32, 32);
-                tmp.setDest((j*TILE_SIZE)+mx-16, (i*TILE_SIZE)+my-16, TILE_SIZE*2, TILE_SIZE*2);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
                 pedestals.push_back(tmp);
@@ -225,10 +225,10 @@ void Map::loadMap(const char* filename,
 
                 maps.push_back(tmp);
 
-                tmp.setImage("Assets/pedestal.png", ren);
+                tmp.setImage("Assets/pedestal1.png", ren);
                 tmp.setSolid(0);
                 tmp.setSource(0, 0, 32, 32);
-                tmp.setDest((j*TILE_SIZE)+mx-16, (i*TILE_SIZE)+my-16, TILE_SIZE*2, TILE_SIZE*2);
+                tmp.setDest((j*TILE_SIZE)+mx, (i*TILE_SIZE)+my, TILE_SIZE, TILE_SIZE);
                 tmp.setId(current);
 
                 pedestals.push_back(tmp);
