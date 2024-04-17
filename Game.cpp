@@ -84,10 +84,15 @@ Game::Game() {
     defeat = false;
     collisionWithEnemy = false;
     counts = 0;
-    lifeBar = 100;
+    lifeBar = 20;
+    saveCoins = 0;
+    saveLevel = 0;
+    saveLifes = 20;
+    highestScore = 0;
     font1 = TTF_OpenFont("Fonts/GameName.ttf", 70);
     font2 = TTF_OpenFont("Fonts/GameName.ttf", 70);
     font3 = TTF_OpenFont("Fonts/GameName.ttf", 200);
+    font4 = TTF_OpenFont("Fonts/GameName.ttf", 70);
     //mapX = mapY = 0;
 
     (*menuButton).setSource(0, 0, 706, 320);
@@ -208,6 +213,8 @@ void Game::render() {
         draw(*menuBackGround);
         draw(*playButton);
         draw(*quitButton);
+        draw(*resumeButton);
+        draw(intToString(highestScore), 1030, 200, 239, 228, 176, font1);
     }
     else if(!showingMenu && playing){
         drawMap();
@@ -308,6 +315,7 @@ void Game::showMenu()
     SDL_Event e;
     (*playButton).setDest(150, 150, 320, 140);
     (*quitButton).setDest(150, 350, 320, 140);
+    (*resumeButton).setDest(150, 550, 320, 140);
 
 
     while(SDL_PollEvent(&e)){
@@ -326,10 +334,14 @@ void Game::showMenu()
                 showingMenu = false;
 
                 l = r = u = d = false;
+                player.setCurAnimation(stand);
 
                 counts = 0;
-                lifeBar = 100;
+                lifeBar = 20;
                 level = 0;
+                saveCoins = counts;
+                saveLevel = level;
+                saveLifes = lifeBar;
                 m_Map.clearMap(maps, traps, bullets, coins, enemies, pedestals, mushrooms);
                 m_Map.loadMap(levels[level], maps, traps, bullets, coins, enemies, pedestals, mushrooms, ren, TILE_SIZE);
             }
@@ -351,6 +363,32 @@ void Game::showMenu()
         }
         else{
             (*quitButton).setImage("Assets/quitbutton01.png", ren);
+        }
+
+        if(mousex >= (*resumeButton).getDX() && mousex <= (*resumeButton).getDX() + (*resumeButton).getDW()
+           && mousey >= (*resumeButton).getDY() && mousey <= (*resumeButton).getDY() + (*resumeButton).getDH())
+        {
+            (*resumeButton).setImage("Assets/resumebutton02.png", ren);
+
+            if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
+                mouseClick.play(0);
+                SDL_Delay(500);
+
+                playing = true;
+                showingMenu = false;
+
+                l = r = u = d = false;
+                player.setCurAnimation(stand);
+
+                counts = saveCoins;
+                lifeBar = saveLifes;
+                level = saveLevel;
+                m_Map.clearMap(maps, traps, bullets, coins, enemies, pedestals, mushrooms);
+                m_Map.loadMap(levels[level], maps, traps, bullets, coins, enemies, pedestals, mushrooms, ren, TILE_SIZE);
+            }
+        }
+        else{
+            (*resumeButton).setImage("Assets/resumebutton01.png", ren);
         }
 
     }
@@ -423,6 +461,7 @@ void Game::showOptions()
             if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
                 mouseClick.play(0);
                 SDL_Delay(500);
+                highestScore = max(highestScore, counts);
                 playing = false;
                 clickingOptions = false;
                 showingMenu = true;
@@ -615,8 +654,10 @@ void Game::update() {
     cout << mousex << " " << mousey << endl;
 
     if(lifeBar <= 0){
+        highestScore = max(highestScore, counts);
         playing = false;
         defeat = true;
+        player.setCurAnimation(stand);
     }
 
     for(size_t i = 0; i < bullets.size(); i++){
@@ -665,9 +706,12 @@ void Game::update() {
 
     player.updateAnimation();
 
-    if(level > 1){
+    if(level > 2){
+        saveLevel = level--;
+        highestScore = max(highestScore, counts);
         playing = false;
         victory = true;
+        player.setCurAnimation(stand);
         return;
     }
 
@@ -677,6 +721,10 @@ void Game::update() {
             level++;
             m_Map.clearMap(maps, traps, bullets, coins, enemies, pedestals, mushrooms);
             m_Map.loadMap(levels[level], maps, traps, bullets, coins, enemies, pedestals, mushrooms, ren, TILE_SIZE);
+
+            saveCoins = counts;
+            saveLevel = level;
+            saveLifes = lifeBar;
         }
         if(c.collision(player, maps[i]) && maps[i].getSolid()) {
 

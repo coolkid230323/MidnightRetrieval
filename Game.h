@@ -21,7 +21,7 @@
 #define HEIGHT 720
 #define defaultFPS 1000/60
 #define TILE_SIZE 32
-#define VELOC 6
+#define VELOC 5
 
 
 class Game {
@@ -51,6 +51,7 @@ private:
     TTF_Font* font1 = nullptr;
     TTF_Font* font2 = nullptr;
     TTF_Font* font3 = nullptr;
+    TTF_Font* font4 = nullptr;
 
     bool running;
     bool showingMenu;
@@ -65,6 +66,10 @@ private:
     int frameCount, timerFPS, lastFrame;
     int mousex, mousey;
     int level;
+    int saveLevel;
+    int saveCoins;
+    int saveLifes;
+    int highestScore;
 
     const char* levels[10];
 
