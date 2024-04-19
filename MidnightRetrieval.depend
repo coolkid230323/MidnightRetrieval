@@ -1,8 +1,8 @@
 # depslib dependency file v1.0
-1710390163 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\main.cpp
+1713511368 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\main.cpp
 	"Game.h"
 
-1713365699 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\game.h
+1713511740 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\game.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
@@ -21,32 +21,32 @@
 1713359636 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\game.cpp
 	"Game.h"
 
-1712632184 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\object.h
+1713511368 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\object.h
 	<bits/stdc++.h>
 	<SDL.h>
 	<SDL_image.h>
 	<SDL_ttf.h>
 	<SDL_mixer.h>
 
-1710529284 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\object.cpp
+1713511368 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\object.cpp
 	"Object.h"
 
-1712546768 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\entity.h
+1713511368 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\entity.h
 	<vector>
 	"Object.h"
 
-1712546768 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\entity.cpp
+1713511368 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\entity.cpp
 	"Entity.h"
 
-1712546859 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\collision.h
+1713511368 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\collision.h
 	<bits/stdc++.h>
 	"Object.h"
 	"Entity.h"
 
-1712546859 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\collision.cpp
+1713511368 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\collision.cpp
 	"Collision.h"
 
-1713075520 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\map.h
+1713511368 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\map.h
 	<bits/stdc++.h>
 	"Object.h"
 	"Obstacle.h"
@@ -55,43 +55,43 @@
 	"Bullet.h"
 	"Enemy.h"
 
-1713172713 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\map.cpp
+1713511368 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\map.cpp
 	"Map.h"
 
-1712546942 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\obstacle.h
+1713511368 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\obstacle.h
 	"Entity.h"
 	<bits/stdc++.h>
 
-1710862823 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\obstacle.cpp
+1713511368 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\obstacle.cpp
 	"Obstacle.h"
 
-1710867373 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\grid.cpp
+1713511368 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\grid.cpp
 	"Grid.h"
 
-1710867373 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\grid.h
+1713511368 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\grid.h
 	"Object.h"
 
-1712572022 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\bullet.cpp
+1713511368 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\bullet.cpp
 	"Bullet.h"
 
-1712572022 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\bullet.h
+1713511368 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\bullet.h
 	<bits/stdc++.h>
 	"Entity.h"
 	"Collision.h"
 	"Object.h"
 
-1712573742 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\audio.h
+1713511368 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\audio.h
 	<SDL.h>
 	<SDL_mixer.h>
 
-1712573742 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\audio.cpp
+1713511368 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\audio.cpp
 	"Audio.h"
 
-1712954272 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\enemy.h
+1713511368 c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\enemy.h
 	<bits/stdc++.h>
 	"Entity.h"
 	"Collision.h"
 
-1713122931 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\enemy.cpp
+1713511368 source:c:\users\admin\onedrive\máy tính\midnightretrieval\midnightretrieval\enemy.cpp
 	"Enemy.h"
 

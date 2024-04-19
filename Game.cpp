@@ -72,6 +72,7 @@ Game::Game() {
     bulletSound.load("Sounds/bulletSound.wav");
     pickMushRoom.load("Sounds/pickmushroom.wav");
     mouseClick.load("Sounds/mouseclick.wav");
+    soundDeath.load("Sounds/death.wav");
 
     m_Map.loadMap(levels[level], maps, traps, bullets, coins, enemies, pedestals, mushrooms, ren, TILE_SIZE);
 
@@ -126,6 +127,7 @@ Game::~Game() {
     TTF_CloseFont(font1);
     TTF_CloseFont(font2);
     TTF_CloseFont(font3);
+    TTF_CloseFont(font4);
     TTF_Quit();
     SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(win);
@@ -414,6 +416,7 @@ void Game::showGameOver()
                 mouseClick.play(0);
                 SDL_Delay(500);
                 playing = false;
+                highestScore = max(highestScore, counts);
                 defeat = false;
                 showingMenu = true;
                 clickingOptions = false;
@@ -506,6 +509,7 @@ void Game::showWinGame()
             if(mouseState & SDL_BUTTON(SDL_BUTTON_LEFT)){
                 mouseClick.play(0);
                 SDL_Delay(500);
+                highestScore = max(highestScore, counts);
                 playing = false;
                 victory = false;
                 showingMenu = true;
@@ -706,14 +710,14 @@ void Game::update() {
 
     player.updateAnimation();
 
-    if(level > 2){
+    /*if(level > 2){
         saveLevel = level--;
         highestScore = max(highestScore, counts);
         playing = false;
         victory = true;
         player.setCurAnimation(stand);
         return;
-    }
+    }*/
 
     for(size_t i = 0; i < maps.size(); i++) {
         Collision c;
@@ -725,6 +729,13 @@ void Game::update() {
             saveCoins = counts;
             saveLevel = level;
             saveLifes = lifeBar;
+        }
+        if(c.collision(player, maps[i]) && maps[i].getId() == 77){
+            highestScore = max(highestScore, counts);
+            playing = false;
+            victory = true;
+            player.setCurAnimation(stand);
+            return;
         }
         if(c.collision(player, maps[i]) && maps[i].getSolid()) {
 
@@ -759,6 +770,7 @@ void Game::update() {
     for(size_t i = 0; i < traps.size(); i++){
         Collision c;
         if(c.collision(player, traps[i])){
+            soundDeath.play(0);
             playing = false;
             defeat = true;
         }
@@ -790,6 +802,7 @@ void Game::update() {
         Collision c;
         if(c.collision(bullets[i], player)){
             bulletSound.play(0);
+            soundDeath.play(0);
             //player.setCurAnimation(injured);
             draw(intToString(lifeBar), 1200, 0, 95, 158, 160, font2);
             lifeBar--;
@@ -801,6 +814,7 @@ void Game::update() {
         Collision c;
         if(enemies[i].getCollisionWithPlayer()){
             bulletSound.play(0);
+            soundDeath.play(0);
             draw(intToString(lifeBar), 1200, 0, 95, 158, 160, font2);
             lifeBar--;
             enemies[i].setCollisionWithPlayer(false);
@@ -811,7 +825,7 @@ void Game::update() {
         Collision c;
         if(c.collision(player, enemies[i]) && !collisionWithEnemy){
             collisionWithEnemy = true;
-            bulletSound.play(0);
+            soundDeath.play(0);
             draw(intToString(lifeBar), 1200, 0, 95, 158, 160, font2);
             lifeBar--;
         }
@@ -885,6 +899,15 @@ void Game::drawMap() {
         draw(mushrooms[i]);
     }
 }
+
+
+
+
+
+
+
+
+
 
 
 

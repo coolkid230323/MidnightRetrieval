@@ -105,6 +105,7 @@ private:
     Audio bulletSound;
     Audio pickMushRoom;
     Audio mouseClick;
+    Audio soundDeath;
 
     int mapX, mapY;
     int veloc;
