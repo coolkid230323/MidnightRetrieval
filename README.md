@@ -13,6 +13,6 @@
 - Có thể ăn các cây nấm trên đường đi để tăng sinh mạng và thu thập vàng để tăng số điểm
 
 # Ngưỡng điểm tự đánh giá
-- 9
+- 8.5
 # Lí do
 - Đã có đủ các yếu tố âm thanh, đồ họa, kèm theo những tính năng mới
